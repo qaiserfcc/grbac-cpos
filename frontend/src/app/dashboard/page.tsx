@@ -58,13 +58,13 @@ function KpiCard({ widget, accent }: { widget: DashboardWidget; accent: string }
   const value = SAMPLE_VALUES[widget.dataKey ?? ""] ?? "—";
   const delta = SAMPLE_DELTA[widget.dataKey ?? ""] ?? "";
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-      <p className="text-sm font-medium text-slate-500">{widget.title}</p>
+    <div className="glass rounded-2xl border border-white/20 p-5 shadow-lg backdrop-blur-md">
+      <p className="text-sm font-medium text-white/70">{widget.title}</p>
       <div className="mt-3 flex items-baseline gap-2">
-        <p className="text-3xl font-semibold text-slate-900">{value}</p>
+        <p className="text-3xl font-semibold text-white">{value}</p>
         <ArrowUpRight className={clsx("h-4 w-4", accent)} />
       </div>
-      <p className="text-xs text-slate-400">{delta || widget.description}</p>
+      <p className="text-xs text-white/50">{delta || widget.description}</p>
     </div>
   );
 }
@@ -90,16 +90,16 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm text-slate-500">Welcome back, {user?.firstName ?? user?.email}</p>
-          <h2 className="text-2xl font-semibold text-slate-900">Your RBAC-enabled control center</h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-white/70">Welcome back, {user?.fullName ?? user?.email}</p>
+          <h2 className="text-2xl font-semibold text-white">Your RBAC-enabled control center</h2>
+          <p className="text-sm text-white/50">
             You currently hold roles: {user?.roles.map((role) => role.name).join(", ")}
           </p>
         </div>
         <button
           type="button"
           onClick={() => mutate()}
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-white"
+          className="glass inline-flex items-center gap-2 rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10 backdrop-blur-md"
         >
           <RefreshCcw className="h-4 w-4" />
           Refresh widgets
@@ -107,13 +107,13 @@ export default function DashboardPage() {
       </div>
 
       {isLoading && !data && (
-        <div className="rounded-xl border border-slate-100 bg-white p-4 text-sm text-slate-500">
+        <div className="glass rounded-xl border border-white/20 p-4 text-sm text-white/70 backdrop-blur-md">
           Loading the widgets assigned to your roles…
         </div>
       )}
 
       {error && (
-        <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+        <div className="glass flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200 backdrop-blur-md">
           <AlertTriangle className="h-4 w-4" />
           Failed to load live widgets. Showing sample data instead.
         </div>
@@ -123,8 +123,8 @@ export default function DashboardPage() {
         <section>
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-slate-900">Key metrics</h3>
-              <p className="text-sm text-slate-500">Surface-level telemetry available to roles with dashboard privileges.</p>
+              <h3 className="text-lg font-semibold text-white">Key metrics</h3>
+              <p className="text-sm text-white/70">Surface-level telemetry available to roles with dashboard privileges.</p>
             </div>
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -132,11 +132,11 @@ export default function DashboardPage() {
               <KpiCard
                 key={widget.id}
                 widget={widget}
-                accent={["text-emerald-500", "text-indigo-500", "text-orange-500"][index % 3]}
+                accent={["text-emerald-400", "text-indigo-400", "text-orange-400"][index % 3]}
               />
             ))}
             {kpiWidgets.length === 0 && (
-              <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-5 text-sm text-slate-500">
+              <div className="glass rounded-2xl border border-dashed border-white/30 p-5 text-sm text-white/70 backdrop-blur-md">
                 No KPI widgets assigned to your roles yet.
               </div>
             )}
@@ -146,24 +146,24 @@ export default function DashboardPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <HasPermission permission="dashboard.view.products">
-          <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+          <section className="glass rounded-2xl border border-white/20 p-6 shadow-lg backdrop-blur-md">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{chartWidget?.description ?? "Product mix"}</p>
-                <h3 className="text-lg font-semibold text-slate-900">{chartWidget?.title ?? "Product Mix"}</h3>
+                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">{chartWidget?.description ?? "Product mix"}</p>
+                <h3 className="text-lg font-semibold text-white">{chartWidget?.title ?? "Product Mix"}</h3>
               </div>
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">
+              <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300">
                 +5.3% MOM
               </span>
             </div>
             <div className="mt-6 space-y-3">
               {PRODUCT_MIX.map((item) => (
                 <div key={item.label} className="flex items-center gap-3">
-                  <div className="w-20 text-sm font-medium text-slate-600">{item.label}</div>
-                  <div className="h-2 flex-1 rounded-full bg-slate-100">
-                    <div className={clsx("h-2 rounded-full bg-indigo-500", PRODUCT_MIX_WIDTH[item.value] ?? "w-1/2")} />
+                  <div className="w-20 text-sm font-medium text-white/80">{item.label}</div>
+                  <div className="h-2 flex-1 rounded-full bg-white/20">
+                    <div className={clsx("h-2 rounded-full bg-gradient-to-r from-indigo-400 to-purple-400", PRODUCT_MIX_WIDTH[item.value] ?? "w-1/2")} />
                   </div>
-                  <div className="w-12 text-right text-sm font-semibold text-slate-900">{item.value}%</div>
+                  <div className="w-12 text-right text-sm font-semibold text-white">{item.value}%</div>
                 </div>
               ))}
             </div>
@@ -171,22 +171,22 @@ export default function DashboardPage() {
         </HasPermission>
 
         <HasPermission permission="dashboard.view.categories">
-          <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+                    <section className="glass rounded-2xl border border-white/20 p-6 shadow-lg backdrop-blur-md">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{tableWidget?.description ?? "Category performance"}</p>
-                <h3 className="text-lg font-semibold text-slate-900">{tableWidget?.title ?? "Category Performance"}</h3>
+                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">{tableWidget?.description ?? "Category performance"}</p>
+                <h3 className="text-lg font-semibold text-white">{tableWidget?.title ?? "Category Performance"}</h3>
               </div>
-              <span className="text-xs text-slate-400">Updated 15m ago</span>
+              <span className="text-xs text-white/50">Updated 15m ago</span>
             </div>
             <div className="mt-6 space-y-4">
               {CATEGORY_PERFORMANCE.map((row) => (
-                <div key={row.category} className="flex items-center justify-between rounded-xl border border-slate-100 px-4 py-3">
+                <div key={row.category} className="glass flex items-center justify-between rounded-xl border border-white/10 px-4 py-3 backdrop-blur-sm">
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">{row.category}</p>
-                    <p className="text-xs text-slate-500">Volume {row.volume}</p>
+                    <p className="text-sm font-semibold text-white">{row.category}</p>
+                    <p className="text-xs text-white/60">Volume {row.volume}</p>
                   </div>
-                  <span className={clsx("text-sm font-semibold", row.trend.startsWith("-") ? "text-red-500" : "text-emerald-500")}>{row.trend}</span>
+                  <span className={clsx("text-sm font-semibold", row.trend.startsWith("-") ? "text-red-300" : "text-emerald-300")}>{row.trend}</span>
                 </div>
               ))}
             </div>

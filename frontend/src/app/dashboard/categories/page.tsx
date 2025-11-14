@@ -19,10 +19,10 @@ const fetchCategories = ([path, token]: [string, string]) =>
 
 function NoAccessMessage() {
   return (
-    <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-10 text-center text-slate-500">
-      <Shapes className="mx-auto mb-4 h-10 w-10 text-slate-300" />
-      <p className="text-lg font-semibold text-slate-600">Categories unavailable</p>
-      <p className="text-sm">You do not have permission to manage assortment categories.</p>
+    <div className="glass rounded-2xl border border-white/20 p-10 text-center backdrop-blur-md">
+      <Shapes className="mx-auto mb-4 h-10 w-10 text-white/40" />
+      <p className="text-lg font-semibold text-white">Categories unavailable</p>
+      <p className="text-sm text-white/70">You do not have permission to manage assortment categories.</p>
     </div>
   );
 }
@@ -223,14 +223,14 @@ export default function CategoriesPage() {
       <div className="space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm text-slate-500">Align inventory architecture with channels.</p>
-            <h2 className="text-2xl font-semibold text-slate-900">Categories</h2>
+            <p className="text-sm text-white/70">Align inventory architecture with channels.</p>
+            <h2 className="text-2xl font-semibold text-white">Categories</h2>
           </div>
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
               onClick={() => mutate()}
-              className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-white"
+              className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/20 backdrop-blur-sm"
             >
               <RefreshCcw className="h-4 w-4" /> Refresh
             </button>
@@ -238,7 +238,7 @@ export default function CategoriesPage() {
               type="button"
               disabled={!canCreate}
               onClick={openCreateModal}
-              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-300"
+              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:from-blue-600 hover:to-purple-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Plus className="h-4 w-4" /> New category
             </button>
@@ -246,41 +246,41 @@ export default function CategoriesPage() {
         </div>
 
         {isLoading && !data && (
-          <div className="rounded-2xl border border-slate-100 bg-white p-4 text-sm text-slate-500">
+          <div className="glass rounded-2xl border border-white/20 p-4 text-sm text-white/70 backdrop-blur-md">
             Loading categories from the API…
           </div>
         )}
 
         {error && (
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+          <div className="glass rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-amber-200 backdrop-blur-md">
             Live category feed unavailable. Showing sample data.
           </div>
         )}
 
-        <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
-          <table className="min-w-full divide-y divide-slate-100 text-left text-sm">
-            <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <div className="glass overflow-hidden rounded-2xl border border-white/20 backdrop-blur-md">
+          <table className="min-w-full divide-y divide-white/10 text-left text-sm">
+            <thead className="bg-white/5 text-xs font-semibold uppercase tracking-wide text-white/70">
               <tr>
                 <th className="px-6 py-3">Category</th>
                 <th className="px-6 py-3">Description</th>
                 <th className="px-6 py-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-slate-700">
+            <tbody className="divide-y divide-white/10 text-white">
               {categories.map((category) => (
                 <tr key={category.id}>
                   <td className="px-6 py-4">
-                    <p className="font-medium text-slate-900">{category.name}</p>
-                    <p className="text-xs text-slate-500">ID {category.id}</p>
+                    <p className="font-medium text-white">{category.name}</p>
+                    <p className="text-xs text-white/50">ID {category.id}</p>
                   </td>
-                  <td className="px-6 py-4 text-slate-600">{category.description ?? "—"}</td>
+                  <td className="px-6 py-4 text-white/70">{category.description ?? "—"}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button
                         type="button"
                         disabled={!canUpdate}
                         onClick={() => openEditModal(category)}
-                        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 disabled:cursor-not-allowed disabled:border-slate-100"
+                        className="inline-flex items-center gap-1 rounded-lg border border-white/20 bg-white/10 px-2 py-1 text-xs font-semibold text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <Pencil className="h-3.5 w-3.5" /> Edit
                       </button>
@@ -288,7 +288,7 @@ export default function CategoriesPage() {
                         type="button"
                         disabled={!canDelete}
                         onClick={() => requestDelete(category)}
-                        className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-2 py-1 text-xs font-semibold text-red-600 transition hover:border-red-300 disabled:cursor-not-allowed disabled:border-slate-100 disabled:text-slate-300"
+                        className="inline-flex items-center gap-1 rounded-lg border border-red-400/20 bg-red-500/10 px-2 py-1 text-xs font-semibold text-red-300 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <Trash2 className="h-3.5 w-3.5" /> Delete
                       </button>
@@ -309,7 +309,7 @@ export default function CategoriesPage() {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 sm:w-auto"
+                  className="w-full rounded-lg border border-white/20 bg-transparent px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto"
                   disabled={isSubmitting}
                 >
                   Cancel
@@ -317,7 +317,7 @@ export default function CategoriesPage() {
                 <button
                   type="submit"
                   form="category-form"
-                  className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:bg-indigo-300 sm:w-auto"
+                  className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:from-blue-600 hover:to-purple-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Saving…" : editingCategory ? "Save changes" : "Create category"}
@@ -326,34 +326,34 @@ export default function CategoriesPage() {
             }
           >
             <form id="category-form" className="space-y-4" onSubmit={onSubmit}>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-white">
                 Name
                 <input
                   type="text"
-                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-900 focus:border-indigo-500 focus:outline-none"
+                  className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/50 focus:border-blue-400 focus:outline-none backdrop-blur-sm"
                   placeholder="Hardware"
                   {...register("name")}
                 />
                 {errors.name && (
-                  <span className="mt-1 block text-xs text-red-500">{errors.name.message}</span>
+                  <span className="mt-1 block text-xs text-red-300">{errors.name.message}</span>
                 )}
               </label>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-white">
                 Description
                 <textarea
-                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none"
+                  className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder-white/50 focus:border-blue-400 focus:outline-none backdrop-blur-sm"
                   rows={4}
                   placeholder="Terminals, scanners, in-lane devices"
                   {...register("description")}
                 />
                 {errors.description && (
-                  <span className="mt-1 block text-xs text-red-500">
+                  <span className="mt-1 block text-xs text-red-300">
                     {errors.description.message}
                   </span>
                 )}
               </label>
               {formError && (
-                <div className="rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-sm text-red-600">
+                <div className="glass rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-200 backdrop-blur-md">
                   {formError}
                 </div>
               )}
@@ -369,11 +369,11 @@ export default function CategoriesPage() {
             confirmLabel="Delete"
             isLoading={isDeleting}
           >
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-white/70">
               Deleting a category will detach it from any associated products.
             </p>
             {deleteError && (
-              <p className="mt-2 rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-sm text-red-600">
+              <p className="mt-2 glass rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-200 backdrop-blur-md">
                 {deleteError}
               </p>
             )}

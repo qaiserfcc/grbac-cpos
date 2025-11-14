@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/context/ToastContext";
 import type { PermissionName } from "@/types/rbac";
 
 interface NavItem {
@@ -33,15 +34,17 @@ const NAV_ITEMS: NavItem[] = [
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { tokens, user, hasPermission, hasRole, logout } = useAuth();
+  const toast = useToast();
   const router = useRouter();
   const pathname = usePathname();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     if (!tokens) {
+      toast.error("Please log in to access the dashboard");
       router.replace("/login");
     }
-  }, [tokens, router]);
+  }, [tokens, router, toast]);
 
   const filteredNav = useMemo(() => {
     return NAV_ITEMS.filter((item) => {
@@ -70,11 +73,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
-      <aside className="hidden w-64 flex-col border-r border-slate-200 bg-slate-900/95 p-6 text-white md:flex">
+    <div className="flex min-h-screen">
+      <aside className="glass hidden w-64 flex-col border-r border-white/20 p-6 text-white md:flex">
         <div>
-          <p className="text-sm uppercase tracking-wide text-slate-400">CPOS</p>
-          <h2 className="text-2xl font-semibold">Control</h2>
+          <p className="gradient-text text-sm uppercase tracking-wide">CPOS</p>
+          <h2 className="text-2xl font-semibold text-white">Control</h2>
         </div>
         <nav className="mt-8 space-y-1">
           {filteredNav.map((item) => (
@@ -84,8 +87,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               className={clsx(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
                 pathname === item.href
-                  ? "bg-white/10 text-white"
-                  : "text-slate-200 hover:bg-white/5 hover:text-white"
+                  ? "bg-white/20 text-white backdrop-blur-sm"
+                  : "text-white/80 hover:bg-white/10 hover:text-white"
               )}
             >
               <item.icon className="h-4 w-4" />
@@ -93,29 +96,29 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </Link>
           ))}
         </nav>
-        <div className="mt-auto rounded-xl bg-white/5 p-4">
-          <p className="text-xs text-slate-300">Signed in as</p>
+        <div className="mt-auto rounded-xl bg-white/10 p-4 backdrop-blur-sm">
+          <p className="text-xs text-white/70">Signed in as</p>
           <p className="text-sm font-semibold text-white">
-            {user?.firstName ? `${user.firstName} ${user?.lastName ?? ""}` : user?.email}
+            {user?.fullName ?? user?.email}
           </p>
-          <p className="text-xs text-slate-400">{user?.roles.map((r) => r.name).join(", ")}</p>
+          <p className="text-xs text-white/50">{user?.roles.map((r) => r.name).join(", ")}</p>
         </div>
       </aside>
 
       <div className="flex flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <header className="glass sticky top-0 z-10 flex items-center justify-between border-b border-white/20 px-4 py-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Dashboard</p>
-            <h1 className="text-lg font-semibold text-slate-900">Granular RBAC Overview</h1>
+            <p className="gradient-text text-xs font-semibold uppercase tracking-wide">Dashboard</p>
+            <h1 className="text-lg font-semibold text-white">Granular RBAC Overview</h1>
           </div>
           <div className="flex items-center gap-3">
-            <span className="hidden text-sm text-slate-500 sm:inline-flex">
+            <span className="hidden text-sm text-white/80 sm:inline-flex">
               {user?.email}
             </span>
             <button
               type="button"
               onClick={handleLogout}
-              className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+              className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/30 hover:bg-white/20"
               disabled={isLoggingOut}
             >
               <LogOut className="h-4 w-4" />

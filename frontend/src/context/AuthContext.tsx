@@ -3,6 +3,7 @@
 import { createContext, useCallback, useMemo, useState, useContext } from "react";
 import type { AuthResponse, AuthTokens, PermissionName, UserProfile } from "@/types/rbac";
 import { post } from "@/lib/api";
+import { useToast } from "./ToastContext";
 
 interface AuthState {
   user: UserProfile | null;
@@ -43,6 +44,7 @@ function loadState(): Pick<AuthState, "tokens" | "user"> | null {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const toast = useToast();
   const [state, setState] = useState<AuthState>(() => {
     const saved = loadState();
     return {
@@ -53,18 +55,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
 
   const login = useCallback(async (email: string, password: string) => {
-    const response = await post<AuthResponse, { identifier: string; password: string }>(
-      "/api/auth/login",
-      { identifier: email, password }
-    );
+    try {
+      const response = await post<AuthResponse, { identifier: string; password: string }>(
+        "/api/auth/login",
+        { identifier: email, password }
+      );
 
-    setState({
-      user: response.user,
-      tokens: response.tokens,
-      isLoading: false,
-    });
-    persistState({ user: response.user, tokens: response.tokens, isLoading: false });
-  }, []);
+      setState({
+        user: response.user,
+        tokens: response.tokens,
+        isLoading: false,
+      });
+      persistState({ user: response.user, tokens: response.tokens, isLoading: false });
+      toast.success("Successfully logged in!");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Login failed";
+      toast.error(message);
+      throw error; // Re-throw so components can handle it if needed
+    }
+  }, [toast]);
 
   const logout = useCallback(async () => {
     if (state.tokens?.refreshToken) {
@@ -79,7 +88,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setState({ user: null, tokens: null, isLoading: false });
     persistState({ user: null, tokens: null, isLoading: false });
-  }, [state.tokens]);
+    toast.success("Successfully logged out!");
+  }, [state.tokens, toast]);
 
   const refresh = useCallback(async () => {
     if (!state.tokens?.refreshToken) return;

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -11,7 +10,6 @@ import { useAuth } from "@/hooks/useAuth";
 export default function LoginPage() {
   const router = useRouter();
   const { login, isLoading } = useAuth();
-  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
@@ -24,60 +22,57 @@ export default function LoginPage() {
 
   const onSubmit = handleSubmit(async (values) => {
     try {
-      setError(null);
       await login(values.email, values.password);
       router.push("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      // Error is already shown in toast by AuthContext
+      console.error("Login error:", err);
     }
   });
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
-        <h1 className="text-2xl font-semibold text-slate-900">CPOS Admin</h1>
-        <p className="mt-1 text-sm text-slate-500">
+    <div className="flex min-h-screen items-center justify-center px-4">
+      <div className="glass w-full max-w-md rounded-2xl p-8">
+        <h1 className="gradient-text text-2xl font-semibold">CPOS Admin</h1>
+        <p className="mt-1 text-sm text-slate-300">
           Sign in with your provisioned RBAC identity.
         </p>
         <form className="mt-8 space-y-4" onSubmit={onSubmit}>
-          <label className="block text-sm font-medium text-slate-700">
+          <label className="block text-sm font-medium text-white">
             Email
             <input
               type="email"
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-900 focus:border-indigo-500 focus:outline-none"
+              className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/70 backdrop-blur-sm focus:border-white/40 focus:outline-none"
               placeholder="admin@cpos.local"
               {...register("email")}
             />
             {errors.email && (
-              <span className="mt-1 block text-xs text-red-500">{errors.email.message}</span>
+              <span className="mt-1 block text-xs text-red-300">{errors.email.message}</span>
             )}
           </label>
-          <label className="block text-sm font-medium text-slate-700">
+          <label className="block text-sm font-medium text-white">
             Password
             <input
               type="password"
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-900 focus:border-indigo-500 focus:outline-none"
+              className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/70 backdrop-blur-sm focus:border-white/40 focus:outline-none"
               placeholder="Passw0rd!"
               {...register("password")}
             />
             {errors.password && (
-              <span className="mt-1 block text-xs text-red-500">{errors.password.message}</span>
+              <span className="mt-1 block text-xs text-red-300">{errors.password.message}</span>
             )}
           </label>
-          {error && (
-            <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</div>
-          )}
           <button
             type="submit"
-            className="inline-flex w-full items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:bg-indigo-300"
+            className="inline-flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-2 text-sm font-semibold text-white transition hover:from-purple-600 hover:to-pink-600 disabled:cursor-not-allowed disabled:from-purple-300 disabled:to-pink-300 animate-gradient"
             disabled={isSubmitting || isLoading}
           >
             {isSubmitting || isLoading ? "Signing in…" : "Sign in"}
           </button>
         </form>
-        <p className="mt-4 text-center text-sm text-slate-500">
+        <p className="mt-4 text-center text-sm text-white/70">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-indigo-600 hover:text-indigo-500">
+          <Link href="/register" className="text-white hover:text-white/80 underline">
             Register here
           </Link>
         </p>

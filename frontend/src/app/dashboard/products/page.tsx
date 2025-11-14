@@ -23,9 +23,9 @@ const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "
 
 function NoAccessMessage() {
   return (
-    <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-10 text-center text-slate-500">
-      <PackageSearch className="mx-auto mb-4 h-10 w-10 text-slate-300" />
-      <p className="text-lg font-semibold text-slate-600">Products unavailable</p>
+    <div className="glass rounded-2xl border border-dashed border-white/30 p-10 text-center text-white/70 backdrop-blur-md">
+      <PackageSearch className="mx-auto mb-4 h-10 w-10 text-white/40" />
+      <p className="text-lg font-semibold text-white">Products unavailable</p>
       <p className="text-sm">You do not have permission to view product inventory.</p>
     </div>
   );
@@ -258,14 +258,14 @@ export default function ProductsPage() {
       <div className="space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm text-slate-500">Track every SKU and available device.</p>
-            <h2 className="text-2xl font-semibold text-slate-900">Product catalog</h2>
+            <p className="text-sm text-white/70">Track every SKU and available device.</p>
+            <h2 className="text-2xl font-semibold text-white">Product catalog</h2>
           </div>
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
               onClick={() => mutate()}
-              className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-white"
+              className="glass inline-flex items-center gap-2 rounded-lg border border-white/20 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10 backdrop-blur-md"
             >
               <RefreshCcw className="h-4 w-4" /> Refresh
             </button>
@@ -273,7 +273,7 @@ export default function ProductsPage() {
               type="button"
               disabled={!canCreate}
               onClick={openCreateModal}
-              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-300"
+              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-2 text-sm font-semibold text-white transition hover:from-indigo-400 hover:to-purple-400 disabled:cursor-not-allowed disabled:bg-slate-300"
             >
               <Plus className="h-4 w-4" /> New product
             </button>
@@ -281,20 +281,20 @@ export default function ProductsPage() {
         </div>
 
         {isLoading && !data && (
-          <div className="rounded-2xl border border-slate-100 bg-white p-4 text-sm text-slate-500">
+          <div className="glass rounded-2xl border border-white/20 p-4 text-sm text-white/70 backdrop-blur-md">
             Loading products from the API…
           </div>
         )}
 
         {error && (
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+          <div className="glass rounded-2xl border border-amber-300/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200 backdrop-blur-md">
             Live product feed unavailable. Showing sample data.
           </div>
         )}
 
-        <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
-          <table className="min-w-full divide-y divide-slate-100 text-left text-sm">
-            <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <div className="glass overflow-hidden rounded-2xl border border-white/20 shadow-lg backdrop-blur-md">
+          <table className="min-w-full divide-y divide-white/10 text-left text-sm">
+            <thead className="bg-white/5 text-xs font-semibold uppercase tracking-wide text-white/70">
               <tr>
                 <th className="px-6 py-3">Product</th>
                 <th className="px-6 py-3">SKU</th>
@@ -304,12 +304,12 @@ export default function ProductsPage() {
                 <th className="px-6 py-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-slate-700">
+            <tbody className="divide-y divide-white/10 text-white/80">
               {products.map((product) => (
                 <tr key={product.id}>
                   <td className="px-6 py-4">
-                    <p className="font-medium text-slate-900">{product.name}</p>
-                    <p className="text-xs text-slate-500">ID {product.id}</p>
+                    <p className="font-medium text-white">{product.name}</p>
+                    <p className="text-xs text-white/50">ID {product.id}</p>
                   </td>
                   <td className="px-6 py-4">{product.sku}</td>
                   <td className="px-6 py-4">{product.category?.name ?? "—"}</td>
@@ -321,7 +321,7 @@ export default function ProductsPage() {
                         type="button"
                         disabled={!canUpdate}
                         onClick={() => openEditModal(product)}
-                        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 disabled:cursor-not-allowed disabled:border-slate-100"
+                        className="glass inline-flex items-center gap-1 rounded-lg border border-white/20 px-2 py-1 text-xs font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:border-white/10 backdrop-blur-sm"
                       >
                         <Pencil className="h-3.5 w-3.5" /> Edit
                       </button>
@@ -329,7 +329,7 @@ export default function ProductsPage() {
                         type="button"
                         disabled={!canDelete}
                         onClick={() => requestDelete(product)}
-                        className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-2 py-1 text-xs font-semibold text-red-600 transition hover:border-red-300 disabled:cursor-not-allowed disabled:border-slate-100 disabled:text-slate-300"
+                        className="glass inline-flex items-center gap-1 rounded-lg border border-red-300/30 px-2 py-1 text-xs font-semibold text-red-300 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/30 backdrop-blur-sm"
                       >
                         <Trash2 className="h-3.5 w-3.5" /> Delete
                       </button>
