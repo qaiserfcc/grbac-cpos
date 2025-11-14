@@ -1,43 +1,26 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState, type ElementType, type ReactNode } from "react";
-import {
-  LayoutDashboard,
-  Package,
-  Boxes,
-  ShieldEllipsis,
-  LogOut,
-  BarChart3,
-} from "lucide-react";
+import { LogOut, Home, Shapes, Package } from "lucide-react";
 import clsx from "clsx";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/context/ToastContext";
-import type { PermissionName } from "@/types/rbac";
+import { HasPermission } from "@/components/rbac/HasPermission";
 
-interface NavItem {
-  label: string;
-  href: string;
-  icon: ElementType<{ className?: string }>;
-  permission?: PermissionName | string;
-  role?: string;
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Products", href: "/dashboard/products", icon: Package, permission: "product.read" },
-  { label: "Categories", href: "/dashboard/categories", icon: Boxes, permission: "category.read" },
-  { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3, permission: "dashboard.view.kpis" },
-  { label: "RBAC Admin", href: "/dashboard/rbac", icon: ShieldEllipsis, role: "Super Admin" },
-];
-
-export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const { tokens, user, hasPermission, hasRole, logout } = useAuth();
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const { tokens, user, logout } = useAuth();
   const toast = useToast();
   const router = useRouter();
   const pathname = usePathname();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const navigation = [
+    { name: "Dashboard", href: "/dashboard", icon: Home, permission: null },
+    { name: "Categories", href: "/dashboard/categories", icon: Shapes, permission: "category.read" },
+    { name: "Products", href: "/dashboard/products", icon: Package, permission: "product.read" },
+  ];
 
   useEffect(() => {
     if (!tokens) {
@@ -45,14 +28,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       router.replace("/login");
     }
   }, [tokens, router, toast]);
-
-  const filteredNav = useMemo(() => {
-    return NAV_ITEMS.filter((item) => {
-      if (item.permission && !hasPermission(item.permission)) return false;
-      if (item.role && !hasRole(item.role)) return false;
-      return true;
-    });
-  }, [hasPermission, hasRole]);
 
   const handleLogout = async () => {
     try {
@@ -73,48 +48,56 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen">
-      <aside className="glass hidden w-64 flex-col border-r border-white/20 p-6 text-white md:flex">
-        <div>
-          <p className="gradient-text text-sm uppercase tracking-wide">CPOS</p>
-          <h2 className="text-2xl font-semibold text-white">Control</h2>
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Sidebar */}
+      <div className="hidden w-64 flex-col border-r border-white/20 bg-black/20 backdrop-blur-md md:flex">
+        <div className="flex h-16 items-center border-b border-white/20 px-4">
+          <p className="gradient-text text-lg font-semibold uppercase tracking-wide">CPOS</p>
         </div>
-        <nav className="mt-8 space-y-1">
-          {filteredNav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={clsx(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
-                pathname === item.href
-                  ? "bg-white/20 text-white backdrop-blur-sm"
-                  : "text-white/80 hover:bg-white/10 hover:text-white"
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="mt-auto rounded-xl bg-white/10 p-4 backdrop-blur-sm">
-          <p className="text-xs text-white/70">Signed in as</p>
-          <p className="text-sm font-semibold text-white">
-            {user?.fullName ?? user?.email}
-          </p>
-          <p className="text-xs text-white/50">{user?.roles.map((r) => r.name).join(", ")}</p>
-        </div>
-      </aside>
+        <nav className="flex-1 space-y-1 px-2 py-4">
+          {navigation.map((item) => {
+            const isActive = pathname === item.href;
+            const content = (
+              <div className={clsx(
+                "group flex items-center rounded-lg px-2 py-2 text-sm font-medium transition",
+                isActive
+                  ? "bg-white/20 text-white"
+                  : "text-white/70 hover:bg-white/10 hover:text-white"
+              )}>
+                <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
+                {item.name}
+              </div>
+            );
 
+            if (item.permission) {
+              return (
+                <HasPermission key={item.name} permission={item.permission}>
+                  <Link href={item.href}>
+                    {content}
+                  </Link>
+                </HasPermission>
+              );
+            }
+
+            return (
+              <Link key={item.name} href={item.href}>
+                {content}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Main content */}
       <div className="flex flex-1 flex-col">
-        <header className="glass sticky top-0 z-10 flex items-center justify-between border-b border-white/20 px-4 py-3">
-          <div>
-            <p className="gradient-text text-xs font-semibold uppercase tracking-wide">Dashboard</p>
-            <h1 className="text-lg font-semibold text-white">Granular RBAC Overview</h1>
+        <header className="flex h-16 items-center justify-between border-b border-white/20 bg-black/10 px-4 backdrop-blur-md md:px-6">
+          <div className="md:hidden">
+            <p className="gradient-text text-lg font-semibold uppercase tracking-wide">CPOS</p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="hidden text-sm text-white/80 sm:inline-flex">
+            <div className="hidden text-sm text-white/80 sm:inline-flex">
               {user?.email}
-            </span>
+            </div>
             <button
               type="button"
               onClick={handleLogout}
@@ -126,7 +109,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </button>
           </div>
         </header>
-        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
+        <main className="flex-1 px-4 py-6 md:px-6 lg:px-8">{children}</main>
       </div>
     </div>
   );

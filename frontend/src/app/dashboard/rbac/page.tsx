@@ -37,16 +37,14 @@ const FALLBACK_USERS: UserProfile[] = [
   {
     id: "usr-1",
     email: "admin@cpos.local",
-    firstName: "Avery",
-    lastName: "Ops",
+    fullName: "Avery Ops",
     roles: [FALLBACK_ROLES[0]],
     permissions: ["product.create", "category.create", "rbac.manage.roles"],
   },
   {
     id: "usr-2",
     email: "product.admin@cpos.local",
-    firstName: "Nico",
-    lastName: "Merch",
+    fullName: "Nico Merch",
     roles: [FALLBACK_ROLES[1]],
     permissions: ["product.read"],
   },

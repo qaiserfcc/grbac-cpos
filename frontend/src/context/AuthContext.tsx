@@ -33,7 +33,8 @@ function persistState(state: AuthState) {
 
 function loadState(): Pick<AuthState, "tokens" | "user"> | null {
   if (typeof window === "undefined") return null;
-  const raw = window.localStorage.getItem(STORAGE_KEY);
+  // Check both old and new storage keys for backward compatibility
+  const raw = window.localStorage.getItem(STORAGE_KEY) || window.localStorage.getItem("auth");
   if (!raw) return null;
   try {
     return JSON.parse(raw);
@@ -56,17 +57,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     try {
-      const response = await post<AuthResponse, { identifier: string; password: string }>(
+      const response = await post<{ user: UserProfile; accessToken: string; refreshToken: string }, { identifier: string; password: string }>(
         "/api/auth/login",
         { identifier: email, password }
       );
 
       setState({
         user: response.user,
-        tokens: response.tokens,
+        tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken },
         isLoading: false,
       });
-      persistState({ user: response.user, tokens: response.tokens, isLoading: false });
+      persistState({ user: response.user, tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken }, isLoading: false });
       toast.success("Successfully logged in!");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Login failed";

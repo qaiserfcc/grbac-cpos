@@ -14,6 +14,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -76,6 +77,41 @@ export default function LoginPage() {
             Register here
           </Link>
         </p>
+        <div className="mt-6 space-y-2">
+          <p className="text-center text-xs text-white/50">Quick login for demo users:</p>
+          <div className="grid grid-cols-1 gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setValue("email", "admin@cpos.local");
+                setValue("password", "Passw0rd!");
+              }}
+              className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs text-white/80 transition hover:bg-white/10 hover:text-white"
+            >
+              Super Admin
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setValue("email", "product@cpos.local");
+                setValue("password", "Passw0rd!");
+              }}
+              className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs text-white/80 transition hover:bg-white/10 hover:text-white"
+            >
+              Product Admin
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setValue("email", "category@cpos.local");
+                setValue("password", "Passw0rd!");
+              }}
+              className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs text-white/80 transition hover:bg-white/10 hover:text-white"
+            >
+              Category Admin
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -55,9 +55,18 @@ export const login = asyncHandler(async (req, res) => {
   }
 
   const context = await getUserContext(user.id);
-  const accessToken = signAccessToken({ sub: user.id, ...context });
+  const accessToken = signAccessToken({ 
+    sub: user.id, 
+    roles: context.roles.map(r => r.name), 
+    permissions: context.permissions 
+  });
   const sessionId = randomUUID();
-  const refreshToken = signRefreshToken({ sub: user.id, ...context, sessionId });
+  const refreshToken = signRefreshToken({ 
+    sub: user.id, 
+    roles: context.roles.map(r => r.name), 
+    permissions: context.permissions, 
+    sessionId 
+  });
   await prisma.session.create({
     data: {
       id: sessionId,
@@ -135,8 +144,17 @@ export const refresh = asyncHandler(async (req, res) => {
   }
 
   const context = await getUserContext(payload.sub);
-  const accessToken = signAccessToken({ sub: payload.sub, ...context });
-  const newRefreshToken = signRefreshToken({ sub: payload.sub, ...context, sessionId: session.id });
+  const accessToken = signAccessToken({ 
+    sub: payload.sub, 
+    roles: context.roles.map(r => r.name), 
+    permissions: context.permissions 
+  });
+  const newRefreshToken = signRefreshToken({ 
+    sub: payload.sub, 
+    roles: context.roles.map(r => r.name), 
+    permissions: context.permissions, 
+    sessionId: session.id 
+  });
   await prisma.session.update({
     where: { id: session.id },
     data: {
