@@ -9,7 +9,8 @@
   "scripts": {
     "lint": "npm run lint -w backend && npm run lint -w frontend",
     "test": "npm run test -w backend && npm run test -w frontend",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "generate-openapi": "npm run generate-openapi -w backend"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
