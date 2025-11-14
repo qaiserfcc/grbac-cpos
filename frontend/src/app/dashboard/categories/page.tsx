@@ -34,7 +34,7 @@ export default function CategoriesPage() {
   const canDelete = hasPermission("category.delete");
 
   const { data, error, isLoading, mutate } = useSWR(
-    tokens?.accessToken ? ["/api/categories", tokens.accessToken] : null,
+    tokens?.accessToken ? ["/categories", tokens.accessToken] : null,
     fetchCategories,
     { revalidateOnFocus: false }
   );
@@ -125,10 +125,10 @@ export default function CategoriesPage() {
 
     try {
       const payload = editingCategory
-        ? await put<Category>(`/api/categories/${editingCategory.id}`, values, {
+        ? await put<Category>(`/categories/${editingCategory.id}`, values, {
             accessToken: tokens.accessToken,
           })
-        : await post<Category>("/api/categories", values, {
+        : await post<Category>("/categories", values, {
             accessToken: tokens.accessToken,
           });
 
@@ -205,7 +205,7 @@ export default function CategoriesPage() {
     await mutate(optimisticData, { revalidate: false, populateCache: true });
 
     try {
-      await del(`/api/categories/${targetId}`, {
+      await del(`/categories/${targetId}`, {
         accessToken: tokens.accessToken,
       });
       dismissDeleteDialog();

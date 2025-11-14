@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { registerSchema, type RegisterSchema } from "@/lib/validators";
 import { get, post } from "@/lib/api";
+import { AuthRouteGuard } from "@/components/auth/AuthRouteGuard";
 
 interface Role {
   id: string;
@@ -15,7 +16,7 @@ interface Role {
   permissions: string[];
 }
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
@@ -24,7 +25,7 @@ export default function RegisterPage() {
   };
 
   const { data: roles, error: rolesError } = useSWR<Role[]>(
-    '/api/rbac/roles',
+    '/rbac/roles',
     fetcher
   );
 
@@ -44,7 +45,7 @@ export default function RegisterPage() {
   const onSubmit = handleSubmit(async (values) => {
     try {
       setError(null);
-      await post("/api/auth/register", values);
+      await post("/auth/register", values);
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
@@ -163,5 +164,13 @@ export default function RegisterPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <AuthRouteGuard>
+      <RegisterForm />
+    </AuthRouteGuard>
   );
 }

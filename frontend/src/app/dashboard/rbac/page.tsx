@@ -66,11 +66,11 @@ function NoAccessMessage() {
 
 export default function RbacPage() {
   const { tokens } = useAuth();
-  const rolesQuery = useSWR(tokens?.accessToken ? ["/api/rbac/roles", tokens.accessToken] : null, fetchRoles, {
+  const rolesQuery = useSWR(tokens?.accessToken ? ["/rbac/roles", tokens.accessToken] : null, fetchRoles, {
     revalidateOnFocus: false,
   });
   const usersQuery = useSWR(
-    tokens?.accessToken ? ["/api/rbac/user-roles", tokens.accessToken] : null,
+    tokens?.accessToken ? ["/rbac/user-roles", tokens.accessToken] : null,
     fetchUsers,
     { revalidateOnFocus: false }
   );

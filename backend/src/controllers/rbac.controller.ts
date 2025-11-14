@@ -130,3 +130,74 @@ export const removeRole = asyncHandler(async (req: AuthenticatedRequest, res) =>
   auditLog({ action: 'user.role.removed', userId: req.user?.id, details: payload });
   res.json({ message: 'Role removed' });
 });
+
+const rolePermissionsSchema = z.object({
+  permissions: z.array(z.string()),
+});
+
+const roleWidgetsSchema = z.object({
+  widgets: z.array(z.string()),
+});
+
+export const updateRolePermissions = asyncHandler(async (req: AuthenticatedRequest, res) => {
+  const payload = rolePermissionsSchema.parse(req.body);
+  const roleId = req.params.roleId;
+
+  // Delete existing permissions
+  await prisma.rolePermission.deleteMany({ where: { roleId } });
+
+  // Add new permissions
+  if (payload.permissions.length > 0) {
+    const permissions = await prisma.permission.findMany({
+      where: { name: { in: payload.permissions } },
+    });
+    await prisma.rolePermission.createMany({
+      data: permissions.map((permission: (typeof permissions)[number]) => ({
+        roleId,
+        permissionId: permission.id,
+      })),
+    });
+  }
+
+  auditLog({
+    action: 'role.permissions.updated',
+    userId: req.user?.id,
+    details: { roleId, permissions: payload.permissions },
+  });
+
+  res.json({ message: 'Role permissions updated' });
+});
+
+export const updateRoleWidgets = asyncHandler(async (req: AuthenticatedRequest, res) => {
+  const payload = roleWidgetsSchema.parse(req.body);
+  const roleId = req.params.roleId;
+
+  // Delete existing widgets
+  await prisma.roleWidget.deleteMany({ where: { roleId } });
+
+  // Add new widgets
+  if (payload.widgets.length > 0) {
+    const widgets = await prisma.dashboardWidget.findMany({
+      where: { widgetKey: { in: payload.widgets } },
+    });
+    await prisma.roleWidget.createMany({
+      data: widgets.map((widget: (typeof widgets)[number]) => ({
+        roleId,
+        widgetId: widget.id,
+      })),
+    });
+  }
+
+  auditLog({
+    action: 'role.widgets.updated',
+    userId: req.user?.id,
+    details: { roleId, widgets: payload.widgets },
+  });
+
+  res.json({ message: 'Role widgets updated' });
+});
+
+export const listWidgets = asyncHandler(async (_req, res) => {
+  const widgets = await prisma.dashboardWidget.findMany();
+  res.json(widgets);
+});

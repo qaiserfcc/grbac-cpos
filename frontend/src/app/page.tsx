@@ -1,6 +1,11 @@
-import Link from "next/link";
+"use client";
 
-export default function Home() {
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
+
+function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
       {/* Hero Section */}
@@ -63,4 +68,33 @@ export default function Home() {
       </div>
     </div>
   );
+}
+
+export default function Home() {
+  const router = useRouter();
+  const { user, tokens, isLoading } = useAuth();
+
+  const isAuthenticated = Boolean(user && tokens);
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, isLoading, router]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
+        <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-8 shadow-2xl">
+          <div className="text-white text-center">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return null; // Will redirect via useEffect
+  }
+
+  return <LandingPage />;
 }

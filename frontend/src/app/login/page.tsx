@@ -6,8 +6,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { loginSchema, type LoginSchema } from "@/lib/validators";
 import { useAuth } from "@/hooks/useAuth";
+import { AuthRouteGuard } from "@/components/auth/AuthRouteGuard";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const { login, isLoading } = useAuth();
 
@@ -114,5 +115,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <AuthRouteGuard>
+      <LoginForm />
+    </AuthRouteGuard>
   );
 }

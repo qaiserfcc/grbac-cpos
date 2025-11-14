@@ -72,7 +72,7 @@ function KpiCard({ widget, accent }: { widget: DashboardWidget; accent: string }
 export default function DashboardPage() {
   const { tokens, user } = useAuth();
   const { data, error, isLoading, mutate } = useSWR(
-    tokens?.accessToken ? ["/api/dashboard/widgets", tokens.accessToken] : null,
+    tokens?.accessToken ? ["/dashboard/widgets", tokens.accessToken] : null,
     fetchWidgets,
     { revalidateOnFocus: false }
   );

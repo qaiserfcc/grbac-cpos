@@ -38,13 +38,13 @@ export default function ProductsPage() {
   const canDelete = hasPermission("product.delete");
 
   const { data, error, isLoading, mutate } = useSWR(
-    tokens?.accessToken ? ["/api/products", tokens.accessToken] : null,
+    tokens?.accessToken ? ["/products", tokens.accessToken] : null,
     fetchProducts,
     { revalidateOnFocus: false }
   );
 
   const { data: categoriesResponse } = useSWR(
-    tokens?.accessToken ? ["/api/categories", tokens.accessToken] : null,
+    tokens?.accessToken ? ["/categories", tokens.accessToken] : null,
     fetchCategories,
     { revalidateOnFocus: false }
   );
@@ -153,10 +153,10 @@ export default function ProductsPage() {
 
     try {
       const payload = editingProduct
-        ? await put<Product>(`/api/products/${editingProduct.id}`, values, {
+        ? await put<Product>(`/products/${editingProduct.id}`, values, {
             accessToken: tokens.accessToken,
           })
-        : await post<Product>("/api/products", values, {
+        : await post<Product>("/products", values, {
             accessToken: tokens.accessToken,
           });
 
@@ -240,7 +240,7 @@ export default function ProductsPage() {
     await mutate(optimisticData, { revalidate: false, populateCache: true });
 
     try {
-      await del(`/api/products/${targetId}`, {
+      await del(`/products/${targetId}`, {
         accessToken: tokens.accessToken,
       });
       dismissDeleteDialog();

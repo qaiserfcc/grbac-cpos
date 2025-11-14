@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { LogOut, Home, Shapes, Package } from "lucide-react";
+import { LogOut, Home, Shapes, Package, Users } from "lucide-react";
 import clsx from "clsx";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/context/ToastContext";
@@ -15,19 +15,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const pathname = usePathname();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: Home, permission: null },
     { name: "Categories", href: "/dashboard/categories", icon: Shapes, permission: "category.read" },
     { name: "Products", href: "/dashboard/products", icon: Package, permission: "product.read" },
+    { name: "Users", href: "/dashboard/users", icon: Users, permission: "rbac.manage.users" },
   ];
 
   useEffect(() => {
-    if (!tokens) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && !tokens) {
       toast.error("Please log in to access the dashboard");
       router.replace("/login");
     }
-  }, [tokens, router, toast]);
+  }, [tokens, router, toast, mounted]);
 
   const handleLogout = async () => {
     try {
@@ -38,6 +44,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       setIsLoggingOut(false);
     }
   };
+
+  if (!mounted) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 text-slate-500">
+        Loading…
+      </div>
+    );
+  }
 
   if (!tokens) {
     return (

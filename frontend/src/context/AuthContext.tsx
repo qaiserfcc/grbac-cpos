@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     try {
       const response = await post<{ user: UserProfile; accessToken: string; refreshToken: string }, { identifier: string; password: string }>(
-        "/api/auth/login",
+        "/auth/login",
         { identifier: email, password }
       );
 
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(async () => {
     if (state.tokens?.refreshToken) {
       try {
-        await post("/api/auth/logout", { refreshToken: state.tokens.refreshToken }, {
+        await post("/auth/logout", { refreshToken: state.tokens.refreshToken }, {
           accessToken: state.tokens.accessToken,
         });
       } catch (error) {
@@ -95,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refresh = useCallback(async () => {
     if (!state.tokens?.refreshToken) return;
     const response = await post<AuthResponse, { refreshToken: string }>(
-      "/api/auth/refresh",
+      "/auth/refresh",
       { refreshToken: state.tokens.refreshToken }
     );
     setState({ user: response.user, tokens: response.tokens, isLoading: false });
