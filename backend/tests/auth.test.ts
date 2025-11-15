@@ -43,9 +43,9 @@ describe('Auth routes', () => {
       fullName: 'Admin User',
     });
     prismaMock.session.create.mockResolvedValue({ id: 'session-1' });
-    getUserContextMock.mockResolvedValue({ 
-      roles: [{ id: 'role-1', name: 'Super Admin', description: 'Full access' }], 
-      permissions: ['product.read'] 
+    getUserContextMock.mockResolvedValue({
+      roles: [{ id: 'role-1', name: 'Super Admin', description: 'Full access' }],
+      permissions: ['product.read']
     });
     signAccessTokenMock.mockReturnValue('access-token');
     signRefreshTokenMock.mockReturnValue('refresh-token');
