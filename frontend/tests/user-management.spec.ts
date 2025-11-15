@@ -3,9 +3,9 @@ import { test, expect } from '@playwright/test';
 test.describe('User Management Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Login first
-    await page.goto('/');
-    await page.fill('input[type="email"]', 'admin@cpos.local');
-    await page.fill('input[type="password"]', 'Passw0rd!');
+    await page.goto('/login');
+    await page.fill('input[name="identifier"]', 'admin@cpos.local');
+    await page.fill('input[name="password"]', 'Passw0rd!');
     await page.click('button[type="submit"]');
     await page.waitForURL('/dashboard');
   });

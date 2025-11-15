@@ -32,3 +32,13 @@ logs/
 
 # Docker
 volumes/
+
+# Test artifacts
+playwright-report/
+test-results/
+playwright/.cache/
+backend/b.txt
+frontend/all-results.json
+frontend/f.txt
+frontend/integration-results.json
+frontend/test-results.json

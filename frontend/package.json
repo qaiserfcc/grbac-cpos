@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev  > f.txt",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "jest"
+    "test": "jest",
+    "test:playwright": "playwright test    sar"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

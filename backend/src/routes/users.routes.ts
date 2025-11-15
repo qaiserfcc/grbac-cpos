@@ -4,6 +4,7 @@ import {
   listUsers,
   updateUserRoles,
   updateUserStatus,
+  createUser,
 } from '../controllers/users.controller';
 import { checkPermission, verifyToken } from '../middleware/auth.middleware';
 
@@ -42,6 +43,39 @@ router.use(verifyToken);
  *               $ref: '#/components/schemas/Error'
  */
 router.get('/', checkPermission('rbac.manage.users'), listUsers);
+
+/**
+ * @swagger
+ * /users:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               fullName:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *       400:
+ *         description: Invalid input data
+ */
+router.post('/', checkPermission('rbac.manage.users'), createUser);
 
 /**
  * @swagger

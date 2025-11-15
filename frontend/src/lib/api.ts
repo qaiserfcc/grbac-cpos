@@ -63,3 +63,11 @@ export async function del<T>(path: string, options?: RequestOptions) {
     ...options,
   });
 }
+
+export async function patch<T, B = unknown>(path: string, body?: B, options?: RequestOptions) {
+  return request<T>(path, {
+    method: "PATCH",
+    body: body ? JSON.stringify(body) : undefined,
+    ...options,
+  });
+}

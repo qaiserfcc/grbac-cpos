@@ -5,9 +5,9 @@ test.describe('Performance Tests', () => {
     const startTime = Date.now();
 
     // Login and navigate to dashboard
-    await page.goto('/');
-    await page.fill('input[type="email"]', 'admin@cpos.local');
-    await page.fill('input[type="password"]', 'Passw0rd!');
+    await page.goto('/login');
+    await page.fill('input[name="identifier"]', 'admin@cpos.local');
+    await page.fill('input[name="password"]', 'Passw0rd!');
     await page.click('button[type="submit"]');
     await page.waitForURL('/dashboard');
 
@@ -21,9 +21,9 @@ test.describe('Performance Tests', () => {
 
   test('should load users page within acceptable time', async ({ page }) => {
     // Login first
-    await page.goto('/');
-    await page.fill('input[type="email"]', 'admin@cpos.local');
-    await page.fill('input[type="password"]', 'Passw0rd!');
+    await page.goto('/login');
+    await page.fill('input[name="identifier"]', 'admin@cpos.local');
+    await page.fill('input[name="password"]', 'Passw0rd!');
     await page.click('button[type="submit"]');
     await page.waitForURL('/dashboard');
 
@@ -50,9 +50,9 @@ test.describe('Performance Tests', () => {
 
   test('should handle multiple user table operations efficiently', async ({ page }) => {
     // Login and navigate to users page
-    await page.goto('/');
-    await page.fill('input[type="email"]', 'admin@cpos.local');
-    await page.fill('input[type="password"]', 'Passw0rd!');
+    await page.goto('/login');
+    await page.fill('input[name="identifier"]', 'admin@cpos.local');
+    await page.fill('input[name="password"]', 'Passw0rd!');
     await page.click('button[type="submit"]');
     await page.waitForURL('/dashboard');
 
@@ -106,9 +106,9 @@ test.describe('Performance Tests', () => {
 
   test('should handle page navigation efficiently', async ({ page }) => {
     // Login first
-    await page.goto('/');
-    await page.fill('input[type="email"]', 'admin@cpos.local');
-    await page.fill('input[type="password"]', 'Passw0rd!');
+    await page.goto('/login');
+    await page.fill('input[name="identifier"]', 'admin@cpos.local');
+    await page.fill('input[name="password"]', 'Passw0rd!');
     await page.click('button[type="submit"]');
     await page.waitForURL('/dashboard');
 
@@ -145,9 +145,9 @@ test.describe('Performance Tests', () => {
 
   test('should handle concurrent user actions', async ({ page }) => {
     // Login and navigate to users page
-    await page.goto('/');
-    await page.fill('input[type="email"]', 'admin@cpos.local');
-    await page.fill('input[type="password"]', 'Passw0rd!');
+    await page.goto('/login');
+    await page.fill('input[name="identifier"]', 'admin@cpos.local');
+    await page.fill('input[name="password"]', 'Passw0rd!');
     await page.click('button[type="submit"]');
     await page.waitForURL('/dashboard');
 
@@ -211,9 +211,9 @@ test.describe('Performance Tests', () => {
     });
 
     // Login and navigate to trigger API calls
-    await page.goto('/');
-    await page.fill('input[type="email"]', 'admin@cpos.local');
-    await page.fill('input[type="password"]', 'Passw0rd!');
+    await page.goto('/login');
+    await page.fill('input[name="identifier"]', 'admin@cpos.local');
+    await page.fill('input[name="password"]', 'Passw0rd!');
     await page.click('button[type="submit"]');
     await page.waitForURL('/dashboard');
 

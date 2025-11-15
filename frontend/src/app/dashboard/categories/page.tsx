@@ -6,7 +6,7 @@ import { useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/hooks/useAuth";
-import { del, get, post, put } from "@/lib/api";
+import { del, get, patch, post } from "@/lib/api";
 import type { Category, PaginatedResult } from "@/types/rbac";
 import { categorySchema, type CategorySchema } from "@/lib/validators";
 import { FALLBACK_CATEGORIES } from "@/data/fallbacks";
@@ -125,7 +125,7 @@ export default function CategoriesPage() {
 
     try {
       const payload = editingCategory
-        ? await put<Category>(`/categories/${editingCategory.id}`, values, {
+        ? await patch<Category>(`/categories/${editingCategory.id}`, values, {
             accessToken: tokens.accessToken,
           })
         : await post<Category>("/categories", values, {

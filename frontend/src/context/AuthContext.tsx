@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useMemo, useState, useContext } from "react";
-import type { AuthResponse, AuthTokens, PermissionName, UserProfile } from "@/types/rbac";
+import type { AuthTokens, PermissionName, UserProfile } from "@/types/rbac";
 import { post } from "@/lib/api";
 import { useToast } from "./ToastContext";
 
@@ -94,16 +94,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refresh = useCallback(async () => {
     if (!state.tokens?.refreshToken) return;
-    const response = await post<AuthResponse, { refreshToken: string }>(
+    const response = await post<{ accessToken: string; refreshToken: string }, { refreshToken: string }>(
       "/auth/refresh",
       { refreshToken: state.tokens.refreshToken }
     );
-    setState({ user: response.user, tokens: response.tokens, isLoading: false });
-    persistState({ user: response.user, tokens: response.tokens, isLoading: false });
-  }, [state.tokens]);
+    setState({ user: state.user, tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken }, isLoading: false });
+    persistState({ user: state.user, tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken }, isLoading: false });
+  }, [state.tokens, state.user]);
 
   const hasRole = useCallback(
-    (roleName: string) => Boolean(state.user?.roles.some((role) => role.name === roleName)),
+    (roleName: string) => Boolean(state.user?.roles?.some((role) => role.name === roleName)),
     [state.user]
   );
 

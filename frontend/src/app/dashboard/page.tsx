@@ -93,7 +93,7 @@ export default function DashboardPage() {
           <p className="text-sm text-white/70">Welcome back, {user?.fullName ?? user?.email}</p>
           <h2 className="text-2xl font-semibold text-white">Your RBAC-enabled control center</h2>
           <p className="text-sm text-white/50">
-            You currently hold roles: {user?.roles.map((role) => role.name).join(", ")}
+            You currently hold roles: {user?.roles?.map((role) => role.name).join(", ") || "None"}
           </p>
         </div>
         <button

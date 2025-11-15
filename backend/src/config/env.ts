@@ -13,7 +13,7 @@ requiredEnv.forEach((key) => {
 export const env = {
   nodeEnv: process.env.NODE_ENV ?? 'development',
   port: Number(process.env.PORT ?? 4000),
-  databaseUrl: process.env.DATABASE_URL ?? '',
+  databaseUrl: process.env.DATABASE_URL ?? 'postgresql://qaisu:nopassword@localhost:5432/cpos',
   jwtAccessSecret: process.env.JWT_ACCESS_SECRET ?? 'changeme-access',
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET ?? 'changeme-refresh',
   accessTokenTtl: process.env.ACCESS_TOKEN_TTL ?? '15m',

@@ -17,26 +17,32 @@ export interface Permission {
   id: string;
   name: PermissionName | string;
   description?: string;
+  resource?: string;
+  action?: string;
 }
 
 export interface Role {
   id: string;
   name: string;
   description?: string;
-  permissions: Permission[];
+  permissions?: Permission[];
+}
+
+export interface Widget {
+  id: string;
+  name: string;
+  description?: string;
 }
 
 export interface UserProfile {
   id: string;
-  email: string;
   username?: string;
+  email: string;
   fullName?: string;
-  roles: {
-    id: string;
-    name: string;
-    description?: string;
-  }[];
-  permissions: PermissionName[];
+  isEnabled?: boolean;
+  createdAt?: string;
+  roles?: Role[];
+  permissions?: string[];
 }
 
 export interface DashboardWidget {
@@ -70,7 +76,66 @@ export interface AuthTokens {
 
 export interface AuthResponse {
   user: UserProfile;
-  tokens: AuthTokens;
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface LoginRequest {
+  identifier: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: UserProfile;
+}
+
+export interface RegisterRequest {
+  username: string;
+  email: string;
+  password: string;
+  fullName: string;
+  roles: string[];
+}
+
+export interface RefreshRequest {
+  refreshToken: string;
+}
+
+export interface UpdateUserRolesRequest {
+  roles: string[];
+}
+
+export interface UpdateUserStatusRequest {
+  isEnabled: boolean;
+}
+
+export interface CreateRoleRequest {
+  name: string;
+  description: string;
+}
+
+export interface UpdateRoleRequest {
+  name: string;
+  description: string;
+}
+
+export interface AssignRoleRequest {
+  userId: string;
+  roleId: string;
+}
+
+export interface UpdateRolePermissionsRequest {
+  permissions: string[];
+}
+
+export interface UpdateRoleWidgetsRequest {
+  widgets: string[];
+}
+
+export interface ErrorResponse {
+  message: string;
 }
 
 export interface PaginatedResult<T> {

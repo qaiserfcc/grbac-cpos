@@ -14,6 +14,49 @@ const updateUserStatusSchema = z.object({
   isEnabled: z.boolean(),
 });
 
+const createUserSchema = z.object({
+  username: z.string().min(3),
+  email: z.string().email(),
+  fullName: z.string().min(1),
+  password: z.string().min(6).optional(),
+});
+
+export const createUser = asyncHandler(async (req: AuthenticatedRequest, res) => {
+  const payload = createUserSchema.parse(req.body);
+
+  // Use provided password or default
+  const rawPassword = payload.password ?? 'Passw0rd!';
+
+  // Lazy import to avoid unnecessary cost if unused elsewhere
+  const bcrypt = await import('bcryptjs');
+  const passwordHash = await bcrypt.hash(rawPassword, 10);
+
+  const user = await prisma.user.create({
+    data: {
+      username: payload.username,
+      email: payload.email,
+      fullName: payload.fullName,
+      passwordHash,
+      isEnabled: true,
+    },
+  });
+
+  auditLog({
+    action: 'user.created',
+    userId: req.user?.id,
+    details: { targetUserId: user.id, username: user.username, email: user.email },
+  });
+
+  res.status(StatusCodes.CREATED).json({
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    fullName: user.fullName,
+    isEnabled: user.isEnabled,
+    createdAt: user.createdAt,
+  });
+});
+
 export const listUsers = asyncHandler(async (_req, res) => {
   const users = await prisma.user.findMany({
     include: {

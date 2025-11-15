@@ -6,7 +6,7 @@ import { useMemo, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/hooks/useAuth";
-import { del, get, post, put } from "@/lib/api";
+import { del, get, post, put, patch } from "@/lib/api";
 import type { Category, PaginatedResult, Product } from "@/types/rbac";
 import { productSchema, type ProductSchema } from "@/lib/validators";
 import { Modal } from "@/components/ui/Modal";
@@ -153,7 +153,7 @@ export default function ProductsPage() {
 
     try {
       const payload = editingProduct
-        ? await put<Product>(`/products/${editingProduct.id}`, values, {
+        ? await patch<Product>(`/products/${editingProduct.id}`, values, {
             accessToken: tokens.accessToken,
           })
         : await post<Product>("/products", values, {

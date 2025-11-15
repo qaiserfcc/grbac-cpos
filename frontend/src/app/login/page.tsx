@@ -19,12 +19,12 @@ function LoginForm() {
     formState: { errors, isSubmitting },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "admin@cpos.local", password: "Passw0rd!" },
+    defaultValues: { identifier: "admin@cpos.local", password: "Passw0rd!" },
   });
 
   const onSubmit = handleSubmit(async (values) => {
     try {
-      await login(values.email, values.password);
+      await login(values.identifier, values.password);
       router.push("/dashboard");
     } catch (err) {
       // Error is already shown in toast by AuthContext
@@ -41,15 +41,15 @@ function LoginForm() {
         </p>
         <form className="mt-8 space-y-4" onSubmit={onSubmit}>
           <label className="block text-sm font-medium text-white">
-            Email
+            Email or Username
             <input
-              type="email"
+              type="text"
               className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/70 backdrop-blur-sm focus:border-white/40 focus:outline-none"
               placeholder="admin@cpos.local"
-              {...register("email")}
+              {...register("identifier")}
             />
-            {errors.email && (
-              <span className="mt-1 block text-xs text-red-300">{errors.email.message}</span>
+            {errors.identifier && (
+              <span className="mt-1 block text-xs text-red-300">{errors.identifier.message}</span>
             )}
           </label>
           <label className="block text-sm font-medium text-white">
@@ -84,7 +84,7 @@ function LoginForm() {
             <button
               type="button"
               onClick={() => {
-                setValue("email", "admin@cpos.local");
+                setValue("identifier", "admin@cpos.local");
                 setValue("password", "Passw0rd!");
               }}
               className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs text-white/80 transition hover:bg-white/10 hover:text-white"
@@ -94,7 +94,7 @@ function LoginForm() {
             <button
               type="button"
               onClick={() => {
-                setValue("email", "product@cpos.local");
+                setValue("identifier", "product@cpos.local");
                 setValue("password", "Passw0rd!");
               }}
               className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs text-white/80 transition hover:bg-white/10 hover:text-white"
@@ -104,7 +104,7 @@ function LoginForm() {
             <button
               type="button"
               onClick={() => {
-                setValue("email", "category@cpos.local");
+                setValue("identifier", "category@cpos.local");
                 setValue("password", "Passw0rd!");
               }}
               className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs text-white/80 transition hover:bg-white/10 hover:text-white"
