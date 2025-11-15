@@ -5,6 +5,7 @@ export function errorHandler(
   err: Error & { statusCode?: number },
   _req: Request,
   res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction,
 ) {
   const status = err.statusCode ?? StatusCodes.INTERNAL_SERVER_ERROR;

@@ -26,7 +26,7 @@ export function verifyToken(req: AuthenticatedRequest, res: Response, next: Next
       permissions: payload.permissions,
     };
     return next();
-  } catch (error) {
+  } catch {
     return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Invalid token' });
   }
 }
