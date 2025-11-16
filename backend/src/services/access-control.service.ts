@@ -1,6 +1,8 @@
 import { prisma } from '../config/database';
 
-export async function getUserRoles(userId: string): Promise<{ id: string; name: string; description: string | null }[]> {
+export async function getUserRoles(
+  userId: string,
+): Promise<{ id: string; name: string; description: string | null }[]> {
   const records = await prisma.userRole.findMany({
     where: { userId },
     include: { role: true },
@@ -26,8 +28,14 @@ export async function getUserPermissions(userId: string): Promise<string[]> {
   return Array.from(new Set(permissionNames));
 }
 
-export async function getUserContext(userId: string): Promise<{ roles: { id: string; name: string; description: string | null }[]; permissions: string[] }> {
-  const [roles, permissions] = await Promise.all([getUserRoles(userId), getUserPermissions(userId)]);
+export async function getUserContext(userId: string): Promise<{
+  roles: { id: string; name: string; description: string | null }[];
+  permissions: string[];
+}> {
+  const [roles, permissions] = await Promise.all([
+    getUserRoles(userId),
+    getUserPermissions(userId),
+  ]);
   return { roles, permissions };
 }
 

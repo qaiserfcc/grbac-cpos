@@ -53,7 +53,9 @@ export const createRole = asyncHandler(async (req: AuthenticatedRequest, res) =>
   });
 
   if (payload.permissions?.length) {
-    const permissions = await prisma.permission.findMany({ where: { name: { in: payload.permissions } } });
+    const permissions = await prisma.permission.findMany({
+      where: { name: { in: payload.permissions } },
+    });
     await prisma.rolePermission.createMany({
       data: permissions.map((permission: (typeof permissions)[number]) => ({
         roleId: role.id,
@@ -81,7 +83,9 @@ export const updateRole = asyncHandler(async (req: AuthenticatedRequest, res) =>
   if (payload.permissions) {
     await prisma.rolePermission.deleteMany({ where: { roleId: role.id } });
     if (payload.permissions.length) {
-      const permissions = await prisma.permission.findMany({ where: { name: { in: payload.permissions } } });
+      const permissions = await prisma.permission.findMany({
+        where: { name: { in: payload.permissions } },
+      });
       await prisma.rolePermission.createMany({
         data: permissions.map((permission: (typeof permissions)[number]) => ({
           roleId: role.id,
@@ -102,7 +106,11 @@ export const updateRole = asyncHandler(async (req: AuthenticatedRequest, res) =>
 
 export const deleteRole = asyncHandler(async (req: AuthenticatedRequest, res) => {
   await prisma.role.delete({ where: { id: req.params.roleId } });
-  auditLog({ action: 'role.deleted', userId: req.user?.id, details: { roleId: req.params.roleId } });
+  auditLog({
+    action: 'role.deleted',
+    userId: req.user?.id,
+    details: { roleId: req.params.roleId },
+  });
   res.status(StatusCodes.NO_CONTENT).send();
 });
 

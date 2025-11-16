@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 
 interface AuthRouteGuardProps {
   children: React.ReactNode;
@@ -13,7 +13,7 @@ interface AuthRouteGuardProps {
  * Route guard that redirects authenticated users away from auth pages (login/register)
  * If user is authenticated, redirects to dashboard or specified redirectTo path
  */
-export function AuthRouteGuard({ children, redirectTo = "/dashboard" }: AuthRouteGuardProps) {
+export function AuthRouteGuard({ children, redirectTo = '/dashboard' }: AuthRouteGuardProps) {
   const { tokens, isLoading } = useAuth();
   const router = useRouter();
 

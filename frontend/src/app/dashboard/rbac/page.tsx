@@ -1,68 +1,78 @@
-"use client";
+'use client';
 
-import useSWR from "swr";
-import { ShieldCheck, Users2, RefreshCcw, LockKeyhole, Plus, Edit, Trash2, UserPlus } from "lucide-react";
-import { useMemo, useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { get, post, patch, del } from "@/lib/api";
-import type { Role, UserProfile, Permission, CreateRoleRequest, UpdateRoleRequest, AssignRoleRequest } from "@/types/rbac";
-import { HasRole } from "@/components/rbac/HasRole";
-import { Modal } from "@/components/ui/Modal";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import useSWR from 'swr';
+import { ShieldCheck, RefreshCcw, LockKeyhole, Plus, Edit, Trash2, UserPlus } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { get, post, patch, del } from '@/lib/api';
+import type {
+  Role,
+  UserProfile,
+  Permission,
+  CreateRoleRequest,
+  UpdateRoleRequest,
+  AssignRoleRequest,
+} from '@/types/rbac';
+import { HasRole } from '@/components/rbac/HasRole';
+import { Modal } from '@/components/ui/Modal';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 
 const FALLBACK_ROLES: Role[] = [
   {
-    id: "role-1",
-    name: "Super Admin",
-    description: "Global access, RBAC + catalog",
+    id: 'role-1',
+    name: 'Super Admin',
+    description: 'Global access, RBAC + catalog',
     permissions: [
-      { id: "perm-1", name: "product.create" },
-      { id: "perm-2", name: "category.create" },
-      { id: "perm-3", name: "rbac.manage.roles" },
+      { id: 'perm-1', name: 'product.create' },
+      { id: 'perm-2', name: 'category.create' },
+      { id: 'perm-3', name: 'rbac.manage.roles' },
     ],
   },
   {
-    id: "role-2",
-    name: "Product Admin",
-    description: "Owns product catalog",
-    permissions: [{ id: "perm-4", name: "product.read" }],
+    id: 'role-2',
+    name: 'Product Admin',
+    description: 'Owns product catalog',
+    permissions: [{ id: 'perm-4', name: 'product.read' }],
   },
   {
-    id: "role-3",
-    name: "Category Admin",
-    description: "Category assortment",
-    permissions: [{ id: "perm-5", name: "category.read" }],
+    id: 'role-3',
+    name: 'Category Admin',
+    description: 'Category assortment',
+    permissions: [{ id: 'perm-5', name: 'category.read' }],
   },
 ];
 
 const FALLBACK_USERS: UserProfile[] = [
   {
-    id: "usr-1",
-    email: "admin@cpos.local",
-    fullName: "Avery Ops",
+    id: 'usr-1',
+    email: 'admin@cpos.local',
+    fullName: 'Avery Ops',
     roles: [FALLBACK_ROLES[0]],
-    permissions: ["product.create", "category.create", "rbac.manage.roles"],
+    permissions: ['product.create', 'category.create', 'rbac.manage.roles'],
   },
   {
-    id: "usr-2",
-    email: "product.admin@cpos.local",
-    fullName: "Nico Merch",
+    id: 'usr-2',
+    email: 'product.admin@cpos.local',
+    fullName: 'Nico Merch',
     roles: [FALLBACK_ROLES[1]],
-    permissions: ["product.read"],
+    permissions: ['product.read'],
   },
 ];
 
 const fetchRoles = ([path, token]: [string, string]) => get<Role[]>(path, { accessToken: token });
 const fetchUsers = ([path, token]: [string, string]) =>
   get<UserProfile[]>(path, { accessToken: token });
-const fetchPermissions = ([path, token]: [string, string]) => get<Permission[]>(path, { accessToken: token });
+const fetchPermissions = ([path, token]: [string, string]) =>
+  get<Permission[]>(path, { accessToken: token });
 
 function NoAccessMessage() {
   return (
     <div className="glass rounded-2xl border border-white/20 p-10 text-center backdrop-blur-md">
       <LockKeyhole className="mx-auto mb-4 h-12 w-12 text-white/40" />
       <p className="text-lg font-semibold text-white">RBAC administration restricted</p>
-      <p className="text-sm text-white/70">Only Super Admins can manage identity and permissions.</p>
+      <p className="text-sm text-white/70">
+        Only Super Admins can manage identity and permissions.
+      </p>
     </div>
   );
 }
@@ -73,53 +83,52 @@ export default function RbacPage() {
   const [showEditRoleModal, setShowEditRoleModal] = useState(false);
   const [showAssignRoleModal, setShowAssignRoleModal] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
-  const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [roleToDelete, setRoleToDelete] = useState<Role | null>(null);
 
-  const rolesQuery = useSWR(tokens?.accessToken ? ["/rbac/roles", tokens.accessToken] : null, fetchRoles, {
-    revalidateOnFocus: false,
-  });
+  const rolesQuery = useSWR(
+    tokens?.accessToken ? ['/rbac/roles', tokens.accessToken] : null,
+    fetchRoles,
+    {
+      revalidateOnFocus: false,
+    },
+  );
   const usersQuery = useSWR(
-    tokens?.accessToken ? ["/users", tokens.accessToken] : null,
+    tokens?.accessToken ? ['/users', tokens.accessToken] : null,
     fetchUsers,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
   const permissionsQuery = useSWR(
-    tokens?.accessToken ? ["/rbac/permissions", tokens.accessToken] : null,
+    tokens?.accessToken ? ['/rbac/permissions', tokens.accessToken] : null,
     fetchPermissions,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
-
-  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
-  const [selectedUserId, setSelectedUserId] = useState<string>("");
-  const [selectedRoleId, setSelectedRoleId] = useState<string>("");
 
   const roles = useMemo(() => rolesQuery.data ?? FALLBACK_ROLES, [rolesQuery.data]);
   const users = useMemo(() => usersQuery.data ?? FALLBACK_USERS, [usersQuery.data]);
   const permissions = useMemo(() => permissionsQuery.data ?? [], [permissionsQuery.data]);
 
   const handleCreateRole = async (formData: FormData) => {
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
+    const name = formData.get('name') as string;
+    const description = formData.get('description') as string;
 
     try {
-      await post<Role, CreateRoleRequest>("/rbac/roles", {
+      await post<Role, CreateRoleRequest>('/rbac/roles', {
         name,
         description,
       });
       rolesQuery.mutate();
       setShowCreateRoleModal(false);
     } catch (error) {
-      console.error("Failed to create role:", error);
+      console.error('Failed to create role:', error);
     }
   };
 
   const handleUpdateRole = async (formData: FormData) => {
     if (!editingRole) return;
 
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
+    const name = formData.get('name') as string;
+    const description = formData.get('description') as string;
 
     try {
       await patch<Role, UpdateRoleRequest>(`/rbac/roles/${editingRole.id}`, {
@@ -130,7 +139,7 @@ export default function RbacPage() {
       setShowEditRoleModal(false);
       setEditingRole(null);
     } catch (error) {
-      console.error("Failed to update role:", error);
+      console.error('Failed to update role:', error);
     }
   };
 
@@ -144,25 +153,23 @@ export default function RbacPage() {
       setShowDeleteConfirm(false);
       setRoleToDelete(null);
     } catch (error) {
-      console.error("Failed to delete role:", error);
+      console.error('Failed to delete role:', error);
     }
   };
 
   const handleAssignRole = async (formData: FormData) => {
-    const userId = formData.get("userId") as string;
-    const roleId = formData.get("roleId") as string;
+    const userId = formData.get('userId') as string;
+    const roleId = formData.get('roleId') as string;
 
     try {
-      await post<{ message: string }, AssignRoleRequest>("/rbac/user-roles", {
+      await post<{ message: string }, AssignRoleRequest>('/rbac/user-roles', {
         userId,
         roleId,
       });
       usersQuery.mutate();
       setShowAssignRoleModal(false);
-      setSelectedUserId("");
-      setSelectedRoleId("");
     } catch (error) {
-      console.error("Failed to assign role:", error);
+      console.error('Failed to assign role:', error);
     }
   };
 
@@ -171,7 +178,9 @@ export default function RbacPage() {
       <div className="space-y-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm text-white/70">Enforce least privilege across the control plane.</p>
+            <p className="text-sm text-white/70">
+              Enforce least privilege across the control plane.
+            </p>
             <h2 className="text-2xl font-semibold text-white">Role-based access control</h2>
           </div>
           <div className="flex gap-3">
@@ -209,19 +218,29 @@ export default function RbacPage() {
 
         <section>
           <h3 className="text-lg font-semibold text-white">Roles</h3>
-          <p className="text-sm text-white/70">Each role maps to curated permissions and widgets.</p>
+          <p className="text-sm text-white/70">
+            Each role maps to curated permissions and widgets.
+          </p>
           <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {roles.map((role) => (
-              <div key={role.id} className="glass rounded-2xl border border-white/20 p-5 backdrop-blur-md shadow-lg">
+              <div
+                key={role.id}
+                className="glass rounded-2xl border border-white/20 p-5 backdrop-blur-md shadow-lg"
+              >
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-5 w-5 text-blue-400" />
                   <p className="text-base font-semibold text-white">{role.name}</p>
                 </div>
                 <p className="mt-2 text-sm text-white/70">{role.description}</p>
-                <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-white/60">Permissions</p>
+                <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-white/60">
+                  Permissions
+                </p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {role.permissions?.map((permission) => (
-                    <span key={permission.id} className="rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 px-3 py-1 text-xs font-semibold text-white border border-white/20">
+                    <span
+                      key={permission.id}
+                      className="rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 px-3 py-1 text-xs font-semibold text-white border border-white/20"
+                    >
                       {permission.name}
                     </span>
                   ))}
@@ -260,7 +279,9 @@ export default function RbacPage() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-white">User assignments</h3>
-              <p className="text-sm text-white/70">Track which operators carry privileged access.</p>
+              <p className="text-sm text-white/70">
+                Track which operators carry privileged access.
+              </p>
             </div>
             <button
               type="button"
@@ -289,7 +310,10 @@ export default function RbacPage() {
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-2">
                         {user.roles?.map((role) => (
-                          <span key={role.id} className="rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 px-3 py-1 text-xs font-semibold text-emerald-200 border border-emerald-400/20">
+                          <span
+                            key={role.id}
+                            className="rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 px-3 py-1 text-xs font-semibold text-emerald-200 border border-emerald-400/20"
+                          >
                             {role.name}
                           </span>
                         ))}
@@ -298,7 +322,10 @@ export default function RbacPage() {
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-2">
                         {user.permissions?.map((permission) => (
-                          <span key={permission} className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white border border-white/20">
+                          <span
+                            key={permission}
+                            className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white border border-white/20"
+                          >
                             {permission}
                           </span>
                         ))}
@@ -344,9 +371,7 @@ export default function RbacPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-white mb-2">
-              Permissions
-            </label>
+            <label className="block text-sm font-medium text-white mb-2">Permissions</label>
             <div className="max-h-40 overflow-y-auto space-y-2">
               {permissions.map((permission) => (
                 <label key={permission.id} className="flex items-center space-x-2">
@@ -414,15 +439,13 @@ export default function RbacPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-white mb-2">
-              Permissions
-            </label>
+            <label className="block text-sm font-medium text-white mb-2">Permissions</label>
             <div className="max-h-40 overflow-y-auto space-y-2">
               {permissions.map((permission) => (
                 <label key={permission.id} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
-                    defaultChecked={editingRole?.permissions?.some(p => p.id === permission.id)}
+                    defaultChecked={editingRole?.permissions?.some((p) => p.id === permission.id)}
                     className="rounded border-white/20 bg-white/10 text-indigo-600 focus:ring-indigo-500"
                   />
                   <span className="text-sm text-white/70">{permission.name}</span>
@@ -470,7 +493,6 @@ export default function RbacPage() {
         isOpen={showAssignRoleModal}
         onClose={() => {
           setShowAssignRoleModal(false);
-          setSelectedUser(null);
         }}
         title="Assign Role to User"
       >
@@ -514,7 +536,6 @@ export default function RbacPage() {
               type="button"
               onClick={() => {
                 setShowAssignRoleModal(false);
-                setSelectedUser(null);
               }}
               className="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/20"
             >

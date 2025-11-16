@@ -28,7 +28,12 @@ const refreshSchema = z.object({
   refreshToken: z.string().min(20),
 });
 
-function sanitizeUser(user: { id: string; username: string; email: string; fullName: string | null }) {
+function sanitizeUser(user: {
+  id: string;
+  username: string;
+  email: string;
+  fullName: string | null;
+}) {
   return {
     id: user.id,
     username: user.username,
@@ -55,17 +60,17 @@ export const login = asyncHandler(async (req, res) => {
   }
 
   const context = await getUserContext(user.id);
-  const accessToken = signAccessToken({ 
-    sub: user.id, 
-    roles: context.roles.map(r => r.name), 
-    permissions: context.permissions 
+  const accessToken = signAccessToken({
+    sub: user.id,
+    roles: context.roles.map((r) => r.name),
+    permissions: context.permissions,
   });
   const sessionId = randomUUID();
-  const refreshToken = signRefreshToken({ 
-    sub: user.id, 
-    roles: context.roles.map(r => r.name), 
-    permissions: context.permissions, 
-    sessionId 
+  const refreshToken = signRefreshToken({
+    sub: user.id,
+    roles: context.roles.map((r) => r.name),
+    permissions: context.permissions,
+    sessionId,
   });
   await prisma.session.create({
     data: {
@@ -144,16 +149,16 @@ export const refresh = asyncHandler(async (req, res) => {
   }
 
   const context = await getUserContext(payload.sub);
-  const accessToken = signAccessToken({ 
-    sub: payload.sub, 
-    roles: context.roles.map(r => r.name), 
-    permissions: context.permissions 
+  const accessToken = signAccessToken({
+    sub: payload.sub,
+    roles: context.roles.map((r) => r.name),
+    permissions: context.permissions,
   });
-  const newRefreshToken = signRefreshToken({ 
-    sub: payload.sub, 
-    roles: context.roles.map(r => r.name), 
-    permissions: context.permissions, 
-    sessionId: session.id 
+  const newRefreshToken = signRefreshToken({
+    sub: payload.sub,
+    roles: context.roles.map((r) => r.name),
+    permissions: context.permissions,
+    sessionId: session.id,
   });
   await prisma.session.update({
     where: { id: session.id },

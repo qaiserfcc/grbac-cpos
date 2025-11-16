@@ -21,11 +21,11 @@ npm run dev
 
 ## Quality Gates
 
-| Command        | Purpose                      |
-| -------------- | ---------------------------- |
-| `npm run lint` | ESLint (Next config)         |
-| `npm run test` | Jest DOM/unit tests (JS DOM) |
-| `npm run build`| Type-safe Next.js build      |
+| Command         | Purpose                      |
+| --------------- | ---------------------------- |
+| `npm run lint`  | ESLint (Next config)         |
+| `npm run test`  | Jest DOM/unit tests (JS DOM) |
+| `npm run build` | Type-safe Next.js build      |
 
 Run lint + tests before submitting changes; optimistic mutation flows rely on inferred types, so type errors can hide runtime regressions.
 

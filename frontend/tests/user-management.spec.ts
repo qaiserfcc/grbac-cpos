@@ -38,9 +38,13 @@ test.describe('User Management Tests', () => {
     const table = page.locator('table').first();
 
     // Check if table has user information columns
-    const hasNameColumn = await table.locator('text=Name, text=Full Name, th:has-text("Name")').isVisible();
+    const hasNameColumn = await table
+      .locator('text=Name, text=Full Name, th:has-text("Name")')
+      .isVisible();
     const hasEmailColumn = await table.locator('text=Email, th:has-text("Email")').isVisible();
-    const hasUsernameColumn = await table.locator('text=Username, th:has-text("Username")').isVisible();
+    const hasUsernameColumn = await table
+      .locator('text=Username, th:has-text("Username")')
+      .isVisible();
     const hasStatusColumn = await table.locator('text=Status, th:has-text("Status")').isVisible();
 
     console.log('Table column visibility:');
@@ -69,7 +73,9 @@ test.describe('User Management Tests', () => {
       console.log(`Found ${badgeCount} role badges in first row`);
 
       // Check for status indicators
-      const statusIndicators = firstRow.locator('text=Active, text=Inactive, [data-testid="status"]');
+      const statusIndicators = firstRow.locator(
+        'text=Active, text=Inactive, [data-testid="status"]',
+      );
       const hasStatus = await statusIndicators.isVisible();
       console.log(`Status indicator visible: ${hasStatus ? '✅' : '❌'}`);
     }
@@ -86,18 +92,24 @@ test.describe('User Management Tests', () => {
 
     const userRows = page.locator('tbody tr, [data-testid="user-row"]');
 
-    if (await userRows.count() > 0) {
+    if ((await userRows.count()) > 0) {
       const firstRow = userRows.first();
 
       // Look for action buttons
-      const assignRoleBtn = firstRow.locator('button:has-text("Assign Role"), [data-testid="assign-role-btn"]');
-      const deactivateBtn = firstRow.locator('button:has-text("Deactivate"), [data-testid="deactivate-btn"]');
-      const activateBtn = firstRow.locator('button:has-text("Activate"), [data-testid="activate-btn"]');
+      const assignRoleBtn = firstRow.locator(
+        'button:has-text("Assign Role"), [data-testid="assign-role-btn"]',
+      );
+      const deactivateBtn = firstRow.locator(
+        'button:has-text("Deactivate"), [data-testid="deactivate-btn"]',
+      );
+      const activateBtn = firstRow.locator(
+        'button:has-text("Activate"), [data-testid="activate-btn"]',
+      );
 
       console.log('Action buttons visibility:');
-      console.log(`- Assign Role: ${await assignRoleBtn.isVisible() ? '✅' : '❌'}`);
-      console.log(`- Deactivate: ${await deactivateBtn.isVisible() ? '✅' : '❌'}`);
-      console.log(`- Activate: ${await activateBtn.isVisible() ? '✅' : '❌'}`);
+      console.log(`- Assign Role: ${(await assignRoleBtn.isVisible()) ? '✅' : '❌'}`);
+      console.log(`- Deactivate: ${(await deactivateBtn.isVisible()) ? '✅' : '❌'}`);
+      console.log(`- Activate: ${(await activateBtn.isVisible()) ? '✅' : '❌'}`);
     }
   });
 
@@ -112,7 +124,7 @@ test.describe('User Management Tests', () => {
 
     const userRows = page.locator('tbody tr, [data-testid="user-row"]');
 
-    if (await userRows.count() > 0) {
+    if ((await userRows.count()) > 0) {
       const firstRow = userRows.first();
 
       // Extract user information from the row

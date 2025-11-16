@@ -11,7 +11,7 @@ test.describe('Permission-Based Access Control Tests', () => {
 
     // Check if mobile device
     const isMobile = await page.evaluate(() => window.innerWidth < 768);
-    
+
     if (isMobile) {
       console.log('📱 Mobile device detected - sidebar is hidden, checking mobile navigation');
       // On mobile, just check that we can access the dashboard
@@ -31,10 +31,10 @@ test.describe('Permission-Based Access Control Tests', () => {
     const productsLink = sidebar.locator('text=Products');
 
     console.log('Admin navigation access:');
-    console.log(`- Dashboard: ${await dashboardLink.isVisible() ? '✅' : '❌'}`);
-    console.log(`- Users: ${await usersLink.isVisible() ? '✅' : '❌'}`);
-    console.log(`- Categories: ${await categoriesLink.isVisible() ? '✅' : '❌'}`);
-    console.log(`- Products: ${await productsLink.isVisible() ? '✅' : '❌'}`);
+    console.log(`- Dashboard: ${(await dashboardLink.isVisible()) ? '✅' : '❌'}`);
+    console.log(`- Users: ${(await usersLink.isVisible()) ? '✅' : '❌'}`);
+    console.log(`- Categories: ${(await categoriesLink.isVisible()) ? '✅' : '❌'}`);
+    console.log(`- Products: ${(await productsLink.isVisible()) ? '✅' : '❌'}`);
 
     // Test navigation to users page
     if (await usersLink.isVisible()) {
@@ -46,8 +46,12 @@ test.describe('Permission-Based Access Control Tests', () => {
       const exportBtn = page.locator('button:has-text("Export"), [data-testid="export-btn"]');
 
       console.log('User management actions:');
-      console.log(`- Add User: ${await addUserBtn.isVisible() ? '✅' : '❌ (may not be implemented yet)'}`);
-      console.log(`- Export: ${await exportBtn.isVisible() ? '✅' : '❌ (may not be implemented yet)'}`);
+      console.log(
+        `- Add User: ${(await addUserBtn.isVisible()) ? '✅' : '❌ (may not be implemented yet)'}`,
+      );
+      console.log(
+        `- Export: ${(await exportBtn.isVisible()) ? '✅' : '❌ (may not be implemented yet)'}`,
+      );
     }
   });
 
@@ -69,18 +73,22 @@ test.describe('Permission-Based Access Control Tests', () => {
       // Check user table for permission-based UI elements
       const userRows = page.locator('tbody tr, [data-testid="user-row"]');
 
-      if (await userRows.count() > 0) {
+      if ((await userRows.count()) > 0) {
         const firstRow = userRows.first();
 
         // Check for action buttons that should be permission-controlled
         const editBtn = firstRow.locator('button:has-text("Edit"), [data-testid="edit-user-btn"]');
-        const deleteBtn = firstRow.locator('button:has-text("Delete"), [data-testid="delete-user-btn"]');
-        const assignRoleBtn = firstRow.locator('button:has-text("Assign Role"), [data-testid="assign-role-btn"]');
+        const deleteBtn = firstRow.locator(
+          'button:has-text("Delete"), [data-testid="delete-user-btn"]',
+        );
+        const assignRoleBtn = firstRow.locator(
+          'button:has-text("Assign Role"), [data-testid="assign-role-btn"]',
+        );
 
         console.log('Permission-controlled actions:');
-        console.log(`- Edit User: ${await editBtn.isVisible() ? '✅' : '❌'}`);
-        console.log(`- Delete User: ${await deleteBtn.isVisible() ? '✅' : '❌'}`);
-        console.log(`- Assign Role: ${await assignRoleBtn.isVisible() ? '✅' : '❌'}`);
+        console.log(`- Edit User: ${(await editBtn.isVisible()) ? '✅' : '❌'}`);
+        console.log(`- Delete User: ${(await deleteBtn.isVisible()) ? '✅' : '❌'}`);
+        console.log(`- Assign Role: ${(await assignRoleBtn.isVisible()) ? '✅' : '❌'}`);
       }
     }
   });
@@ -99,7 +107,9 @@ test.describe('Permission-Based Access Control Tests', () => {
 
     // Check if redirected or shows access denied
     const currentUrl = page.url();
-    const hasAccessDenied = await page.locator('text=Access Denied, text=Unauthorized, text=Forbidden').isVisible();
+    const hasAccessDenied = await page
+      .locator('text=Access Denied, text=Unauthorized, text=Forbidden')
+      .isVisible();
     const isRedirected = !currentUrl.includes('/dashboard/admin-only');
 
     console.log('Unauthorized access handling:');
@@ -157,12 +167,16 @@ test.describe('Permission-Based Access Control Tests', () => {
       await page.waitForURL('/dashboard/users');
 
       // Look for bulk actions that require specific permissions
-      const bulkDeleteBtn = page.locator('button:has-text("Delete Selected"), [data-testid="bulk-delete-btn"]');
-      const bulkAssignRoleBtn = page.locator('button:has-text("Assign Role to Selected"), [data-testid="bulk-assign-role-btn"]');
+      const bulkDeleteBtn = page.locator(
+        'button:has-text("Delete Selected"), [data-testid="bulk-delete-btn"]',
+      );
+      const bulkAssignRoleBtn = page.locator(
+        'button:has-text("Assign Role to Selected"), [data-testid="bulk-assign-role-btn"]',
+      );
 
       console.log('Bulk action permissions:');
-      console.log(`- Bulk Delete: ${await bulkDeleteBtn.isVisible() ? '✅' : '❌'}`);
-      console.log(`- Bulk Assign Role: ${await bulkAssignRoleBtn.isVisible() ? '✅' : '❌'}`);
+      console.log(`- Bulk Delete: ${(await bulkDeleteBtn.isVisible()) ? '✅' : '❌'}`);
+      console.log(`- Bulk Assign Role: ${(await bulkAssignRoleBtn.isVisible()) ? '✅' : '❌'}`);
 
       // Check for checkboxes/selectors for bulk operations
       const userCheckboxes = page.locator('input[type="checkbox"][data-testid="user-checkbox"]');

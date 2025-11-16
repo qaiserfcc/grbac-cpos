@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import useSWR from "swr";
-import { registerSchema, type RegisterSchema } from "@/lib/validators";
-import { get, post } from "@/lib/api";
-import { AuthRouteGuard } from "@/components/auth/AuthRouteGuard";
+import { useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
+import { registerSchema, type RegisterSchema } from '@/lib/validators';
+import { get, post } from '@/lib/api';
+import { AuthRouteGuard } from '@/components/auth/AuthRouteGuard';
 
 interface Role {
   id: string;
@@ -24,31 +24,28 @@ function RegisterForm() {
     return get(url);
   };
 
-  const { data: roles, error: rolesError } = useSWR<Role[]>(
-    '/rbac/roles',
-    fetcher
-  );
+  const { data: roles, error: rolesError } = useSWR<Role[]>('/rbac/roles', fetcher);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
-    watch,
+    control,
   } = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { username: "", email: "", password: "", fullName: "", roles: [] },
+    defaultValues: { username: '', email: '', password: '', fullName: '', roles: [] },
   });
 
-  const selectedRoles = watch("roles");
+  const selectedRoles = useWatch({ control, name: 'roles' }) ?? [];
 
   const onSubmit = handleSubmit(async (values) => {
     try {
       setError(null);
-      await post("/auth/register", values);
-      router.push("/dashboard");
+      await post('/auth/register', values);
+      router.push('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed");
+      setError(err instanceof Error ? err.message : 'Registration failed');
     }
   });
 
@@ -76,9 +73,7 @@ function RegisterForm() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 px-4">
       <div className="glass w-full max-w-md rounded-2xl border border-white/20 p-8 backdrop-blur-md shadow-2xl">
         <h1 className="text-2xl font-semibold text-white">Register User</h1>
-        <p className="mt-1 text-sm text-white/70">
-          Create a new user account with roles.
-        </p>
+        <p className="mt-1 text-sm text-white/70">Create a new user account with roles.</p>
         <form className="mt-8 space-y-4" onSubmit={onSubmit}>
           <label className="block text-sm font-medium text-white">
             Username
@@ -86,7 +81,7 @@ function RegisterForm() {
               type="text"
               className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/50 backdrop-blur-sm focus:border-blue-400 focus:outline-none"
               placeholder="admin"
-              {...register("username")}
+              {...register('username')}
             />
             {errors.username && (
               <span className="mt-1 block text-xs text-red-300">{errors.username.message}</span>
@@ -98,7 +93,7 @@ function RegisterForm() {
               type="email"
               className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/50 backdrop-blur-sm focus:border-blue-400 focus:outline-none"
               placeholder="admin@cpos.local"
-              {...register("email")}
+              {...register('email')}
             />
             {errors.email && (
               <span className="mt-1 block text-xs text-red-300">{errors.email.message}</span>
@@ -110,7 +105,7 @@ function RegisterForm() {
               type="text"
               className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/50 backdrop-blur-sm focus:border-blue-400 focus:outline-none"
               placeholder="Admin User"
-              {...register("fullName")}
+              {...register('fullName')}
             />
             {errors.fullName && (
               <span className="mt-1 block text-xs text-red-300">{errors.fullName.message}</span>
@@ -122,7 +117,7 @@ function RegisterForm() {
               type="password"
               className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/50 backdrop-blur-sm focus:border-blue-400 focus:outline-none"
               placeholder="Passw0rd!"
-              {...register("password")}
+              {...register('password')}
             />
             {errors.password && (
               <span className="mt-1 block text-xs text-red-300">{errors.password.message}</span>
@@ -136,7 +131,7 @@ function RegisterForm() {
               value={selectedRoles}
               onChange={(e) => {
                 const values = Array.from(e.target.selectedOptions, (option) => option.value);
-                setValue("roles", values);
+                setValue('roles', values);
               }}
             >
               {roles.map((role) => (
@@ -159,7 +154,7 @@ function RegisterForm() {
             className="inline-flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Registering…" : "Register"}
+            {isSubmitting ? 'Registering…' : 'Register'}
           </button>
         </form>
       </div>

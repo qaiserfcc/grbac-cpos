@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useAuth } from '@/hooks/useAuth';
 
 function LandingPage() {
   return (
@@ -33,17 +33,23 @@ function LandingPage() {
                 <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-xl p-6">
                   <div className="text-3xl mb-4">📦</div>
                   <h3 className="text-lg font-semibold text-white mb-2">Inventory Management</h3>
-                  <p className="text-white/70 text-sm">Track products, stock levels, and suppliers in real-time.</p>
+                  <p className="text-white/70 text-sm">
+                    Track products, stock levels, and suppliers in real-time.
+                  </p>
                 </div>
                 <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-xl p-6">
                   <div className="text-3xl mb-4">💰</div>
                   <h3 className="text-lg font-semibold text-white mb-2">Sales Processing</h3>
-                  <p className="text-white/70 text-sm">Fast and secure transaction processing with detailed reporting.</p>
+                  <p className="text-white/70 text-sm">
+                    Fast and secure transaction processing with detailed reporting.
+                  </p>
                 </div>
                 <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-xl p-6">
                   <div className="text-3xl mb-4">👥</div>
                   <h3 className="text-lg font-semibold text-white mb-2">Customer Management</h3>
-                  <p className="text-white/70 text-sm">Build customer profiles and loyalty programs.</p>
+                  <p className="text-white/70 text-sm">
+                    Build customer profiles and loyalty programs.
+                  </p>
                 </div>
               </div>
 
@@ -78,7 +84,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push("/dashboard");
+      router.push('/dashboard');
     }
   }, [isAuthenticated, isLoading, router]);
 

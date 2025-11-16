@@ -10,15 +10,17 @@
     "lint": "npm run lint -w backend && npm run lint -w frontend",
     "test": "npm run test -w backend && npm run test -w frontend",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "generate-openapi": "npm run generate-openapi -w backend",
     "dev:f": "cd /Users/qaisu/Downloads/grbac-cpos/frontend && npm run dev > f.txt",
     "dev:fe": "cat frontend/f.txt",
     "dev:b": "cd /Users/qaisu/Downloads/grbac-cpos/backend && npm run dev > b.txt",
-    "dev:be": "cat backend/b.txt"
- 
+    "dev:be": "cat backend/b.txt",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
-    "prettier": "^3.1.1" 
+    "husky": "^9.1.7",
+    "prettier": "^3.1.1"
   }
 }

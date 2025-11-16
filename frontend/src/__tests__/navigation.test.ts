@@ -46,17 +46,17 @@ describe('Navigation Logic', () => {
   });
 
   it('should have dashboard always visible', () => {
-    const dashboardItem = navigation.find(item => item.name === 'Dashboard');
+    const dashboardItem = navigation.find((item) => item.name === 'Dashboard');
     expect(dashboardItem?.permission).toBeNull();
   });
 
   it('should require category.read for categories', () => {
-    const categoriesItem = navigation.find(item => item.name === 'Categories');
+    const categoriesItem = navigation.find((item) => item.name === 'Categories');
     expect(categoriesItem?.permission).toBe('category.read');
   });
 
   it('should require product.read for products', () => {
-    const productsItem = navigation.find(item => item.name === 'Products');
+    const productsItem = navigation.find((item) => item.name === 'Products');
     expect(productsItem?.permission).toBe('product.read');
   });
 });

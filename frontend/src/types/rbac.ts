@@ -1,17 +1,17 @@
 export type PermissionName =
-  | "product.create"
-  | "product.read"
-  | "product.update"
-  | "product.delete"
-  | "category.create"
-  | "category.read"
-  | "category.update"
-  | "category.delete"
-  | "rbac.manage.roles"
-  | "rbac.manage.userRoles"
-  | "dashboard.view.products"
-  | "dashboard.view.categories"
-  | "dashboard.view.kpis";
+  | 'product.create'
+  | 'product.read'
+  | 'product.update'
+  | 'product.delete'
+  | 'category.create'
+  | 'category.read'
+  | 'category.update'
+  | 'category.delete'
+  | 'rbac.manage.roles'
+  | 'rbac.manage.userRoles'
+  | 'dashboard.view.products'
+  | 'dashboard.view.categories'
+  | 'dashboard.view.kpis';
 
 export interface Permission {
   id: string;
@@ -48,7 +48,7 @@ export interface UserProfile {
 export interface DashboardWidget {
   id: string;
   title: string;
-  widgetType: "kpi" | "chart" | "table" | "list";
+  widgetType: 'kpi' | 'chart' | 'table' | 'list';
   description?: string;
   dataKey?: string;
 }

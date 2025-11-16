@@ -13,18 +13,48 @@ const roles = [
 ];
 
 const permissions = [
-  { name: 'product.create', module: 'product', action: 'create', description: 'Create new product' },
+  {
+    name: 'product.create',
+    module: 'product',
+    action: 'create',
+    description: 'Create new product',
+  },
   { name: 'product.read', module: 'product', action: 'read', description: 'Read product data' },
   { name: 'product.update', module: 'product', action: 'update', description: 'Update product' },
   { name: 'product.delete', module: 'product', action: 'delete', description: 'Delete product' },
-  { name: 'category.create', module: 'category', action: 'create', description: 'Create new category' },
+  {
+    name: 'category.create',
+    module: 'category',
+    action: 'create',
+    description: 'Create new category',
+  },
   { name: 'category.read', module: 'category', action: 'read', description: 'Read category data' },
   { name: 'category.update', module: 'category', action: 'update', description: 'Update category' },
   { name: 'category.delete', module: 'category', action: 'delete', description: 'Delete category' },
-  { name: 'rbac.manage.roles', module: 'rbac', action: 'manage', description: 'Manage system roles' },
-  { name: 'rbac.manage.users', module: 'rbac', action: 'manage', description: 'Manage users and their roles' },
-  { name: 'dashboard.view.products', module: 'dashboard', action: 'view', description: 'View product-related widgets' },
-  { name: 'dashboard.view.categories', module: 'dashboard', action: 'view', description: 'View category-related widgets' },
+  {
+    name: 'rbac.manage.roles',
+    module: 'rbac',
+    action: 'manage',
+    description: 'Manage system roles',
+  },
+  {
+    name: 'rbac.manage.users',
+    module: 'rbac',
+    action: 'manage',
+    description: 'Manage users and their roles',
+  },
+  {
+    name: 'dashboard.view.products',
+    module: 'dashboard',
+    action: 'view',
+    description: 'View product-related widgets',
+  },
+  {
+    name: 'dashboard.view.categories',
+    module: 'dashboard',
+    action: 'view',
+    description: 'View category-related widgets',
+  },
 ];
 
 const widgets = [

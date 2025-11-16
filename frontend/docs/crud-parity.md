@@ -13,16 +13,16 @@ This document explains how the Products and Categories dashboards maintain featu
 
 ## Feature Matrix
 
-| Capability | Products (`src/app/dashboard/products/page.tsx`) | Categories (`src/app/dashboard/categories/page.tsx`) |
-| ---------- | ----------------------------------------------- | --------------------------------------------------- |
-| Read gate  | `product.read` HasPermission                     | `category.read` HasPermission                       |
-| Create     | `openCreateModal` preloads defaults, ensures first category is selected | `openCreateModal` resets form, opens modal |
-| Edit       | `openEditModal(product)` populates form           | `openEditModal(category)` populates form            |
-| Validation | `productSchema` (name, sku, categoryId, price, stock) | `categorySchema` (name, optional description) |
-| Optimism   | Snapshot + optimistic insert/update via SWR mutate | Identical snapshot + mutate pattern                |
-| Rollback   | Restores snapshot + surfaces `formError`          | Restores snapshot + surfaces `formError`           |
-| Delete     | `ConfirmDialog` with `requestDelete`, `confirmDelete` | Same dialog + `deleteError` feedback               |
-| Empty/fallback | Loading + amber banner messaging if API fails plus fallback seeds | Same UX copy + fallback seeds                     |
+| Capability     | Products (`src/app/dashboard/products/page.tsx`)                        | Categories (`src/app/dashboard/categories/page.tsx`) |
+| -------------- | ----------------------------------------------------------------------- | ---------------------------------------------------- |
+| Read gate      | `product.read` HasPermission                                            | `category.read` HasPermission                        |
+| Create         | `openCreateModal` preloads defaults, ensures first category is selected | `openCreateModal` resets form, opens modal           |
+| Edit           | `openEditModal(product)` populates form                                 | `openEditModal(category)` populates form             |
+| Validation     | `productSchema` (name, sku, categoryId, price, stock)                   | `categorySchema` (name, optional description)        |
+| Optimism       | Snapshot + optimistic insert/update via SWR mutate                      | Identical snapshot + mutate pattern                  |
+| Rollback       | Restores snapshot + surfaces `formError`                                | Restores snapshot + surfaces `formError`             |
+| Delete         | `ConfirmDialog` with `requestDelete`, `confirmDelete`                   | Same dialog + `deleteError` feedback                 |
+| Empty/fallback | Loading + amber banner messaging if API fails plus fallback seeds       | Same UX copy + fallback seeds                        |
 
 ## Manual QA Checklist
 

@@ -18,9 +18,11 @@ test.describe('Dashboard Navigation Tests', () => {
   test('should show sidebar navigation', async ({ page }) => {
     // Skip sidebar check on mobile devices where sidebar is hidden
     const isMobile = await page.evaluate(() => window.innerWidth < 768);
-    
+
     if (isMobile) {
-      console.log('📱 Mobile device detected - sidebar is hidden, skipping sidebar navigation check');
+      console.log(
+        '📱 Mobile device detected - sidebar is hidden, skipping sidebar navigation check',
+      );
       return;
     }
 
@@ -46,9 +48,11 @@ test.describe('Dashboard Navigation Tests', () => {
   test('should navigate to different sections', async ({ page }) => {
     // Check if mobile device
     const isMobile = await page.evaluate(() => window.innerWidth < 768);
-    
+
     if (isMobile) {
-      console.log('📱 Mobile device detected - navigation may be different, skipping detailed navigation test');
+      console.log(
+        '📱 Mobile device detected - navigation may be different, skipping detailed navigation test',
+      );
       return;
     }
 

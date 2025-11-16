@@ -84,7 +84,9 @@ test.describe('Performance Tests', () => {
     }
 
     // Operation 3: Filter users (if filter exists)
-    const searchInput = page.locator('input[placeholder*="search" i], input[placeholder*="filter" i]');
+    const searchInput = page.locator(
+      'input[placeholder*="search" i], input[placeholder*="filter" i]',
+    );
     if (await searchInput.isVisible()) {
       const startFilter = Date.now();
       await searchInput.fill('admin');
@@ -95,12 +97,14 @@ test.describe('Performance Tests', () => {
 
     // Log performance results
     console.log('User table operations performance:');
-    operations.forEach(op => {
-      console.log(`- ${op.name}: ${op.time}ms${op.count !== undefined ? ` (${op.count} users)` : ''}`);
+    operations.forEach((op) => {
+      console.log(
+        `- ${op.name}: ${op.time}ms${op.count !== undefined ? ` (${op.count} users)` : ''}`,
+      );
     });
 
     // Check if all operations completed within reasonable time
-    const allFast = operations.every(op => op.time < 2000); // 2 seconds per operation
+    const allFast = operations.every((op) => op.time < 2000); // 2 seconds per operation
     console.log(`All operations completed quickly (< 2s each): ${allFast ? '✅' : '❌'}`);
   });
 
@@ -134,12 +138,12 @@ test.describe('Performance Tests', () => {
 
     // Log navigation performance
     console.log('Page navigation performance:');
-    navigationTimes.forEach(nav => {
+    navigationTimes.forEach((nav) => {
       console.log(`- ${nav.page}: ${nav.time}ms`);
     });
 
     // Check if navigation is fast
-    const allNavFast = navigationTimes.every(nav => nav.time < 2000); // 2 seconds per navigation
+    const allNavFast = navigationTimes.every((nav) => nav.time < 2000); // 2 seconds per navigation
     console.log(`All navigation completed quickly (< 2s each): ${allNavFast ? '✅' : '❌'}`);
   });
 
@@ -163,7 +167,7 @@ test.describe('Performance Tests', () => {
 
     // Action 1: Click on a user row
     const userRows = page.locator('tbody tr, [data-testid="user-row"]');
-    if (await userRows.count() > 0) {
+    if ((await userRows.count()) > 0) {
       await userRows.first().click();
     }
 
@@ -181,30 +185,32 @@ test.describe('Performance Tests', () => {
 
     // Check if UI remained responsive
     const stillResponsive = totalTime < 5000; // 5 seconds for multiple actions
-    console.log(`UI remained responsive during concurrent actions: ${stillResponsive ? '✅' : '❌'}`);
+    console.log(
+      `UI remained responsive during concurrent actions: ${stillResponsive ? '✅' : '❌'}`,
+    );
   });
 
   test('should measure API response times', async ({ page }) => {
     // This test measures the time for API calls by monitoring network requests
-    const apiResponseTimes: Array<{url: string, status: number, time: number}> = [];
+    const apiResponseTimes: Array<{ url: string; status: number; time: number }> = [];
     const requestStartTimes = new Map<string, number>();
 
     // Listen for API requests
-    page.on('request', request => {
+    page.on('request', (request) => {
       if (request.url().includes('/api/')) {
         requestStartTimes.set(request.url(), Date.now());
         console.log(`API Request: ${request.method()} ${request.url()}`);
       }
     });
 
-    page.on('response', response => {
+    page.on('response', (response) => {
       if (response.url().includes('/api/')) {
         const startTime = requestStartTimes.get(response.url());
         const responseTime = startTime ? Date.now() - startTime : 0;
         apiResponseTimes.push({
           url: response.url(),
           status: response.status(),
-          time: responseTime
+          time: responseTime,
         });
         requestStartTimes.delete(response.url());
       }
@@ -227,12 +233,12 @@ test.describe('Performance Tests', () => {
 
     // Log API performance
     console.log('API Response Times:');
-    apiResponseTimes.forEach(api => {
+    apiResponseTimes.forEach((api) => {
       console.log(`- ${api.url}: ${api.time}ms (Status: ${api.status})`);
     });
 
     // Check if API responses are acceptable
-    const allApiFast = apiResponseTimes.every(api => api.time < 2000); // 2 seconds per API call
+    const allApiFast = apiResponseTimes.every((api) => api.time < 2000); // 2 seconds per API call
     console.log(`All API calls responded quickly (< 2s each): ${allApiFast ? '✅' : '❌'}`);
   });
 });

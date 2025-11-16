@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { createContext, useCallback, useMemo, useState, useContext } from "react";
-import type { AuthTokens, PermissionName, UserProfile } from "@/types/rbac";
-import { post } from "@/lib/api";
-import { useToast } from "./ToastContext";
+import { createContext, useCallback, useMemo, useState, useContext } from 'react';
+import type { AuthTokens, PermissionName, UserProfile } from '@/types/rbac';
+import { post } from '@/lib/api';
+import { useToast } from './ToastContext';
 
 interface AuthState {
   user: UserProfile | null;
@@ -21,25 +21,25 @@ export interface AuthContextValue extends AuthState {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-const STORAGE_KEY = "cpos.auth";
+const STORAGE_KEY = 'cpos.auth';
 
 function persistState(state: AuthState) {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
   window.localStorage.setItem(
     STORAGE_KEY,
-    JSON.stringify({ tokens: state.tokens, user: state.user })
+    JSON.stringify({ tokens: state.tokens, user: state.user }),
   );
 }
 
-function loadState(): Pick<AuthState, "tokens" | "user"> | null {
-  if (typeof window === "undefined") return null;
+function loadState(): Pick<AuthState, 'tokens' | 'user'> | null {
+  if (typeof window === 'undefined') return null;
   // Check both old and new storage keys for backward compatibility
-  const raw = window.localStorage.getItem(STORAGE_KEY) || window.localStorage.getItem("auth");
+  const raw = window.localStorage.getItem(STORAGE_KEY) || window.localStorage.getItem('auth');
   if (!raw) return null;
   try {
     return JSON.parse(raw);
   } catch (error) {
-    console.error("Failed to parse auth state", error);
+    console.error('Failed to parse auth state', error);
     return null;
   }
 }
@@ -55,67 +55,86 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   });
 
-  const login = useCallback(async (email: string, password: string) => {
-    try {
-      const response = await post<{ user: UserProfile; accessToken: string; refreshToken: string }, { identifier: string; password: string }>(
-        "/auth/login",
-        { identifier: email, password }
-      );
+  const login = useCallback(
+    async (email: string, password: string) => {
+      try {
+        const response = await post<
+          { user: UserProfile; accessToken: string; refreshToken: string },
+          { identifier: string; password: string }
+        >('/auth/login', { identifier: email, password });
 
-      setState({
-        user: response.user,
-        tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken },
-        isLoading: false,
-      });
-      persistState({ user: response.user, tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken }, isLoading: false });
-      toast.success("Successfully logged in!");
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Login failed";
-      toast.error(message);
-      throw error; // Re-throw so components can handle it if needed
-    }
-  }, [toast]);
+        setState({
+          user: response.user,
+          tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken },
+          isLoading: false,
+        });
+        persistState({
+          user: response.user,
+          tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken },
+          isLoading: false,
+        });
+        toast.success('Successfully logged in!');
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Login failed';
+        toast.error(message);
+        throw error; // Re-throw so components can handle it if needed
+      }
+    },
+    [toast],
+  );
 
   const logout = useCallback(async () => {
     if (state.tokens?.refreshToken) {
       try {
-        await post("/auth/logout", { refreshToken: state.tokens.refreshToken }, {
-          accessToken: state.tokens.accessToken,
-        });
+        await post(
+          '/auth/logout',
+          { refreshToken: state.tokens.refreshToken },
+          {
+            accessToken: state.tokens.accessToken,
+          },
+        );
       } catch (error) {
-        console.warn("Logout failed", error);
+        console.warn('Logout failed', error);
       }
     }
 
     setState({ user: null, tokens: null, isLoading: false });
     persistState({ user: null, tokens: null, isLoading: false });
-    toast.success("Successfully logged out!");
+    toast.success('Successfully logged out!');
   }, [state.tokens, toast]);
 
   const refresh = useCallback(async () => {
     if (!state.tokens?.refreshToken) return;
-    const response = await post<{ accessToken: string; refreshToken: string }, { refreshToken: string }>(
-      "/auth/refresh",
-      { refreshToken: state.tokens.refreshToken }
-    );
-    setState({ user: state.user, tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken }, isLoading: false });
-    persistState({ user: state.user, tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken }, isLoading: false });
+    const response = await post<
+      { accessToken: string; refreshToken: string },
+      { refreshToken: string }
+    >('/auth/refresh', { refreshToken: state.tokens.refreshToken });
+    setState({
+      user: state.user,
+      tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken },
+      isLoading: false,
+    });
+    persistState({
+      user: state.user,
+      tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken },
+      isLoading: false,
+    });
   }, [state.tokens, state.user]);
 
   const hasRole = useCallback(
     (roleName: string) => Boolean(state.user?.roles?.some((role) => role.name === roleName)),
-    [state.user]
+    [state.user],
   );
 
   const hasPermission = useCallback(
     (permission: PermissionName | string) =>
       Boolean(state.user?.permissions?.includes(permission as PermissionName)),
-    [state.user]
+    [state.user],
   );
 
   const value = useMemo<AuthContextValue>(
     () => ({ ...state, login, logout, refresh, hasRole, hasPermission }),
-    [state, login, logout, refresh, hasRole, hasPermission]
+    [state, login, logout, refresh, hasRole, hasPermission],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -124,7 +143,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuthContext() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuthContext must be used within an AuthProvider");
+    throw new Error('useAuthContext must be used within an AuthProvider');
   }
   return context;
 }

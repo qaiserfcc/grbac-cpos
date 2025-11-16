@@ -67,14 +67,14 @@ export const listUsers = asyncHandler(async (_req, res) => {
     orderBy: { createdAt: 'desc' },
   });
 
-  const result = users.map((user: typeof users[0]) => ({
+  const result = users.map((user: (typeof users)[0]) => ({
     id: user.id,
     username: user.username,
     email: user.email,
     fullName: user.fullName,
     isEnabled: user.isEnabled,
     createdAt: user.createdAt,
-    roles: user.roles.map((ur: typeof user.roles[0]) => ({
+    roles: user.roles.map((ur: (typeof user.roles)[0]) => ({
       id: ur.role.id,
       name: ur.role.name,
       description: ur.role.description,
@@ -106,7 +106,7 @@ export const getUser = asyncHandler(async (req, res) => {
     fullName: user.fullName,
     isEnabled: user.isEnabled,
     createdAt: user.createdAt,
-    roles: user.roles.map((ur: typeof user.roles[0]) => ({
+    roles: user.roles.map((ur: (typeof user.roles)[0]) => ({
       id: ur.role.id,
       name: ur.role.name,
       description: ur.role.description,

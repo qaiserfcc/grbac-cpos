@@ -30,52 +30,55 @@ test.describe('Integration Tests - UI and API Data Flow', () => {
     await addUserBtn.scrollIntoViewIfNeeded();
     await addUserBtn.click({ force: true });
 
-      // Wait for modal/form to appear
-      await page.waitForSelector('[data-testid="add-user-modal"], .modal, form');
+    // Wait for modal/form to appear
+    await page.waitForSelector('[data-testid="add-user-modal"], .modal, form');
 
-      // Generate unique test user data
-      const timestamp = Date.now();
-  const testEmail = `testuser${timestamp}@cpos.local`;
-  const testUsername = `testuser${timestamp}`;
-  const testName = `Test User ${timestamp}`;
+    // Generate unique test user data
+    const timestamp = Date.now();
+    const testEmail = `testuser${timestamp}@cpos.local`;
+    const testUsername = `testuser${timestamp}`;
+    const testName = `Test User ${timestamp}`;
 
-      // Fill out the form
-    const nameInput = page.locator('input[name="fullName"], #fullName, input[placeholder*="Full" i]');
-      const emailInput = page.locator('input[name="email"], input[type="email"]');
-      const usernameInput = page.locator('input[name="username"]');
+    // Fill out the form
+    const nameInput = page.locator(
+      'input[name="fullName"], #fullName, input[placeholder*="Full" i]',
+    );
+    const emailInput = page.locator('input[name="email"], input[type="email"]');
+    const usernameInput = page.locator('input[name="username"]');
 
-      if (await nameInput.isVisible()) {
-        await nameInput.fill(testName);
-      }
-      if (await emailInput.isVisible()) {
-        await emailInput.fill(testEmail);
-      }
-      if (await usernameInput.isVisible()) {
-        await usernameInput.fill(testUsername);
-      }
+    if (await nameInput.isVisible()) {
+      await nameInput.fill(testName);
+    }
+    if (await emailInput.isVisible()) {
+      await emailInput.fill(testEmail);
+    }
+    if (await usernameInput.isVisible()) {
+      await usernameInput.fill(testUsername);
+    }
 
-      // Submit the form
+    // Submit the form
     const modal = page.locator('[data-testid="add-user-modal"]');
     const submitBtn = modal.locator('button[type="submit"], button:has-text("Create")');
     await submitBtn.click({ force: true });
 
     // Wait for modal to close and table to re-render
     await page.waitForLoadState('networkidle');
-    await expect(page.locator('tbody tr, [data-testid="user-row"]').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('tbody tr, [data-testid="user-row"]').first()).toBeVisible({
+      timeout: 10000,
+    });
 
     // Check if user was added by email
-      const updatedUserRows = page.locator('tbody tr, [data-testid="user-row"]');
-      const updatedCount = await updatedUserRows.count();
-      console.log(`Updated user count: ${updatedCount}`);
+    const updatedUserRows = page.locator('tbody tr, [data-testid="user-row"]');
+    const updatedCount = await updatedUserRows.count();
+    console.log(`Updated user count: ${updatedCount}`);
 
     // Look for the new user in the table
     const newUserRow = page.locator(`text=${testEmail}`);
     await expect(newUserRow).toBeVisible({ timeout: 10000 });
     const userAdded = await newUserRow.isVisible();
 
-      console.log(`New user added: ${userAdded ? '✅' : '❌'}`);
-      console.log(`User count increased: ${updatedCount > initialCount ? '✅' : '❌'}`);
-    
+    console.log(`New user added: ${userAdded ? '✅' : '❌'}`);
+    console.log(`User count increased: ${updatedCount > initialCount ? '✅' : '❌'}`);
   });
 
   test('should update user status', async ({ page }) => {
@@ -96,23 +99,23 @@ test.describe('Integration Tests - UI and API Data Flow', () => {
     }
     await page.waitForURL('/dashboard/users');
 
-  // Always create a fresh temp user for deterministic status toggle
-  const addUserBtn2 = page.locator('[data-testid="add-user-btn"]');
-  await addUserBtn2.scrollIntoViewIfNeeded();
-  await addUserBtn2.click({ force: true });
-  await page.waitForSelector('[data-testid="add-user-modal"], .modal, form');
-  const ts = Date.now();
-  const tempEmail = `temp${ts}@cpos.local`;
-  await page.fill('input[name="fullName"]', `Temp User ${ts}`);
-  await page.fill('input[name="email"]', tempEmail);
-  await page.fill('input[name="username"]', `temp${ts}`);
-  const modal2 = page.locator('[data-testid="add-user-modal"]');
-  await modal2.locator('button[type="submit"], button:has-text("Create")').click({ force: true });
-  await page.waitForLoadState('networkidle');
+    // Always create a fresh temp user for deterministic status toggle
+    const addUserBtn2 = page.locator('[data-testid="add-user-btn"]');
+    await addUserBtn2.scrollIntoViewIfNeeded();
+    await addUserBtn2.click({ force: true });
+    await page.waitForSelector('[data-testid="add-user-modal"], .modal, form');
+    const ts = Date.now();
+    const tempEmail = `temp${ts}@cpos.local`;
+    await page.fill('input[name="fullName"]', `Temp User ${ts}`);
+    await page.fill('input[name="email"]', tempEmail);
+    await page.fill('input[name="username"]', `temp${ts}`);
+    const modal2 = page.locator('[data-testid="add-user-modal"]');
+    await modal2.locator('button[type="submit"], button:has-text("Create")').click({ force: true });
+    await page.waitForLoadState('networkidle');
 
-  // Find the newly created user row
-  const firstRow = page.locator('[data-testid="user-row"]', { hasText: tempEmail }).first();
-  await expect(firstRow).toBeVisible();
+    // Find the newly created user row
+    const firstRow = page.locator('[data-testid="user-row"]', { hasText: tempEmail }).first();
+    await expect(firstRow).toBeVisible();
 
     // Check current status
     const statusSpan = firstRow.locator('span:has-text("Active"), span:has-text("Inactive")');
@@ -120,7 +123,9 @@ test.describe('Integration Tests - UI and API Data Flow', () => {
     console.log(`Initial user status: ${initialStatus}`);
 
     // Look for status toggle button
-    const statusBtn = firstRow.locator('button:has-text("Activate"), button:has-text("Deactivate"), [data-testid="status-toggle"]');
+    const statusBtn = firstRow.locator(
+      'button:has-text("Activate"), button:has-text("Deactivate"), [data-testid="status-toggle"]',
+    );
     if (await statusBtn.isVisible()) {
       const buttonText = await statusBtn.textContent();
       console.log(`Status button text: ${buttonText}`);
@@ -129,8 +134,12 @@ test.describe('Integration Tests - UI and API Data Flow', () => {
       await statusBtn.click({ force: true });
 
       // Wait for status text to change
-      const updatedStatusSpan = firstRow.locator('span:has-text("Active"), span:has-text("Inactive")');
-      await expect.poll(async () => (await updatedStatusSpan.textContent())?.trim()).not.toEqual(initialStatus?.trim());
+      const updatedStatusSpan = firstRow.locator(
+        'span:has-text("Active"), span:has-text("Inactive")',
+      );
+      await expect
+        .poll(async () => (await updatedStatusSpan.textContent())?.trim())
+        .not.toEqual(initialStatus?.trim());
       const updatedStatus = await updatedStatusSpan.textContent();
       console.log(`Updated user status: ${updatedStatus}`);
 
@@ -202,7 +211,9 @@ test.describe('Integration Tests - UI and API Data Flow', () => {
         const roleBadgeCount = await roleBadges.count();
         const hasRoleBadge = roleBadgeCount > 0;
 
-        console.log(`Role badges found after assignment: ${roleBadgeCount} (${hasRoleBadge ? '✅' : '❌'})`);
+        console.log(
+          `Role badges found after assignment: ${roleBadgeCount} (${hasRoleBadge ? '✅' : '❌'})`,
+        );
       }
     } else {
       console.log('Assign Role button not found');
@@ -235,8 +246,12 @@ test.describe('Integration Tests - UI and API Data Flow', () => {
     const loadingSpinner = page.locator('[data-testid="loading"], .spinner, .loading');
 
     console.log('Error handling elements:');
-    console.log(`- Error messages: ${await errorMessage.isVisible() ? 'Visible' : 'Not visible'}`);
-    console.log(`- Loading indicators: ${await loadingSpinner.isVisible() ? 'Visible' : 'Not visible'}`);
+    console.log(
+      `- Error messages: ${(await errorMessage.isVisible()) ? 'Visible' : 'Not visible'}`,
+    );
+    console.log(
+      `- Loading indicators: ${(await loadingSpinner.isVisible()) ? 'Visible' : 'Not visible'}`,
+    );
 
     // Check if page still functions after potential errors
     const pageTitle = page.locator('text=Users');

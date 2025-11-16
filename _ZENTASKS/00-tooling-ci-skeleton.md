@@ -1,6 +1,6 @@
 # 00 - Tooling & CI Skeleton
 
-Status: pending
+Status: completed
 Assigned: Copilot
 
 Purpose

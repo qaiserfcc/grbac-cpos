@@ -1,26 +1,26 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const loginSchema = z.object({
-  identifier: z.string().min(3, "Identifier must be at least 3 characters"),
+  identifier: z.string().min(3, 'Identifier must be at least 3 characters'),
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Must contain an uppercase letter")
-    .regex(/[a-z]/, "Must contain a lowercase letter")
-    .regex(/[0-9]/, "Must contain a number"),
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Must contain an uppercase letter')
+    .regex(/[a-z]/, 'Must contain a lowercase letter')
+    .regex(/[0-9]/, 'Must contain a number'),
 });
 
 export const registerSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
+  username: z.string().min(3, 'Username must be at least 3 characters'),
   email: z.string().email(),
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Must contain an uppercase letter")
-    .regex(/[a-z]/, "Must contain a lowercase letter")
-    .regex(/[0-9]/, "Must contain a number"),
-  fullName: z.string().min(1, "Full name is required"),
-  roles: z.array(z.string()).min(1, "Select at least one role"),
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Must contain an uppercase letter')
+    .regex(/[a-z]/, 'Must contain a lowercase letter')
+    .regex(/[0-9]/, 'Must contain a number'),
+  fullName: z.string().min(1, 'Full name is required'),
+  roles: z.array(z.string()).min(1, 'Select at least one role'),
 });
 
 export const productSchema = z.object({
@@ -28,7 +28,7 @@ export const productSchema = z.object({
   sku: z.string().min(2),
   price: z.number().nonnegative(),
   stock: z.number().int().nonnegative(),
-  categoryId: z.string().min(1, "Select a category"),
+  categoryId: z.string().min(1, 'Select a category'),
 });
 
 export const categorySchema = z.object({
@@ -43,7 +43,7 @@ export const roleSchema = z.object({
 });
 
 export const updateUserRolesSchema = z.object({
-  roles: z.array(z.string().uuid()).min(1, "Select at least one role"),
+  roles: z.array(z.string().uuid()).min(1, 'Select at least one role'),
 });
 
 export const updateUserStatusSchema = z.object({
@@ -66,11 +66,11 @@ export const assignRoleSchema = z.object({
 });
 
 export const updateRolePermissionsSchema = z.object({
-  permissions: z.array(z.string().uuid()).min(1, "Select at least one permission"),
+  permissions: z.array(z.string().uuid()).min(1, 'Select at least one permission'),
 });
 
 export const updateRoleWidgetsSchema = z.object({
-  widgets: z.array(z.string().uuid()).min(1, "Select at least one widget"),
+  widgets: z.array(z.string().uuid()).min(1, 'Select at least one widget'),
 });
 
 export type LoginSchema = z.infer<typeof loginSchema>;

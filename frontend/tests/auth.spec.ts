@@ -33,7 +33,7 @@ test.describe('Authentication Tests', () => {
 
     // Should stay on login page (no redirect to dashboard)
     await expect(page).toHaveURL('/login');
-    
+
     // Check that we're not redirected to dashboard (login failed)
     await page.waitForTimeout(1000); // Wait for potential redirect
     await expect(page).not.toHaveURL('/dashboard');

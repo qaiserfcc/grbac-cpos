@@ -14,7 +14,7 @@ This is the backend API for the Cloud Point of Sale (CPOS) system, built with Ex
 - **Validation**: Joi or express-validator
 - **Logging**: Winston or Morgan
 - **Testing**: Jest with Supertest
-- **Deployment**: Vercel 
+- **Deployment**: Vercel
 
 ## Project Structure
 
@@ -314,8 +314,7 @@ npm run migrate && npm run seed
 
 The frontend (cpos-web) will consume these APIs. Ensure CORS is configured to allow requests from the frontend domain. Use JWT tokens for authentication between frontend and backend.
 
-
-----------------------
+---
 
 # CPOS-Web/Frontend Agent Instructions
 

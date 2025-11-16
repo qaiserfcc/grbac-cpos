@@ -1,15 +1,16 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
 import useSWR from 'swr';
 import { HasPermission } from '@/components/rbac/HasPermission';
-import { get, put, post, patch, request } from '@/lib/api';
+import { get, post, patch, request } from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
 import { UserProfile, Role } from '@/types/rbac';
 
 // Removed demo fallbacks to avoid invalid IDs hitting backend during tests
 
-const fetchUsers = ([path, token]: [string, string]) => get<UserProfile[]>(path, { accessToken: token });
+const fetchUsers = ([path, token]: [string, string]) =>
+  get<UserProfile[]>(path, { accessToken: token });
 const fetchRoles = ([path, token]: [string, string]) => get<Role[]>(path, { accessToken: token });
 
 export default function UsersPage() {
@@ -19,12 +20,12 @@ export default function UsersPage() {
 
   const { data: users, mutate: mutateUsers } = useSWR(
     tokens?.accessToken ? ['/users', tokens.accessToken] : null,
-    fetchUsers
+    fetchUsers,
   );
 
   const { data: roles } = useSWR(
     tokens?.accessToken ? ['/rbac/roles', tokens.accessToken] : null,
-    fetchRoles
+    fetchRoles,
   );
 
   const [showAddUserModal, setShowAddUserModal] = useState(false);
@@ -58,7 +59,7 @@ export default function UsersPage() {
       await request('/rbac/user-roles', {
         method: 'DELETE',
         body: JSON.stringify({ userId, roleId }),
-        accessToken: tokens?.accessToken
+        accessToken: tokens?.accessToken,
       });
       mutateUsers();
     } catch (error) {
@@ -115,9 +116,7 @@ export default function UsersPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div>
-                            <div className="text-sm font-medium text-gray-900">
-                              {user.fullName}
-                            </div>
+                            <div className="text-sm font-medium text-gray-900">{user.fullName}</div>
                             <div className="text-sm text-gray-500">{user.email}</div>
                             <div className="text-sm text-gray-500">@{user.username}</div>
                           </div>
@@ -165,12 +164,7 @@ export default function UsersPage() {
                             Assign Role
                           </button>
                           <button
-                            onClick={() =>
-                              handleStatusChange(
-                                user.id,
-                                !user.isEnabled
-                              )
-                            }
+                            onClick={() => handleStatusChange(user.id, !user.isEnabled)}
                             data-testid="status-toggle"
                             className={`${
                               user.isEnabled
@@ -201,7 +195,7 @@ export default function UsersPage() {
                 <div className="space-y-2">
                   {roles
                     ?.filter(
-                      (role) => !selectedUser.roles?.some((userRole) => userRole.id === role.id)
+                      (role) => !selectedUser.roles?.some((userRole) => userRole.id === role.id),
                     )
                     .map((role) => (
                       <button
@@ -244,20 +238,50 @@ export default function UsersPage() {
                   className="space-y-4"
                 >
                   <div>
-                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name</label>
-                    <input id="fullName" name="fullName" placeholder="Full name" className="mt-1 block w-full border rounded-md p-2" />
+                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+                      Full Name
+                    </label>
+                    <input
+                      id="fullName"
+                      name="fullName"
+                      placeholder="Full name"
+                      className="mt-1 block w-full border rounded-md p-2"
+                    />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                    <input id="email" type="email" name="email" placeholder="email@domain.com" className="mt-1 block w-full border rounded-md p-2" />
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      name="email"
+                      placeholder="email@domain.com"
+                      className="mt-1 block w-full border rounded-md p-2"
+                    />
                   </div>
                   <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
-                    <input id="username" name="username" placeholder="username" className="mt-1 block w-full border rounded-md p-2" />
+                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                      Username
+                    </label>
+                    <input
+                      id="username"
+                      name="username"
+                      placeholder="username"
+                      className="mt-1 block w-full border rounded-md p-2"
+                    />
                   </div>
                   <div className="flex justify-end gap-2">
-                    <button type="button" onClick={() => setShowAddUserModal(false)} className="px-4 py-2 bg-gray-300 rounded-md">Cancel</button>
-                    <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-md">Create</button>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddUserModal(false)}
+                      className="px-4 py-2 bg-gray-300 rounded-md"
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-md">
+                      Create
+                    </button>
                   </div>
                 </form>
               </div>

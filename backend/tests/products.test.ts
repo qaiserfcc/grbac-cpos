@@ -90,7 +90,9 @@ describe('Product routes', () => {
     expect(updateRes.status).toBe(200);
     expect(updateRes.body.name).toBe('Updated Product');
 
-    const deleteRes = await request(app).delete(`/api/products/${createdProduct.id}`).set(authHeader);
+    const deleteRes = await request(app)
+      .delete(`/api/products/${createdProduct.id}`)
+      .set(authHeader);
     expect(deleteRes.status).toBe(204);
   });
 });

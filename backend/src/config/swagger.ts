@@ -6,7 +6,8 @@ const options: swaggerJSDoc.Options = {
     info: {
       title: 'GRBAC Cloud POS API',
       version: '1.0.0',
-      description: 'API documentation for the GRBAC Cloud POS system with Role-Based Access Control',
+      description:
+        'API documentation for the GRBAC Cloud POS system with Role-Based Access Control',
       contact: {
         name: 'API Support',
         email: 'support@grbac-cpos.com',
@@ -28,7 +29,8 @@ const options: swaggerJSDoc.Options = {
           type: 'http',
           scheme: 'bearer',
           bearerFormat: 'JWT',
-          description: 'JWT Authorization header using the Bearer scheme. Example: "Authorization: Bearer {token}"',
+          description:
+            'JWT Authorization header using the Bearer scheme. Example: "Authorization: Bearer {token}"',
         },
       },
       schemas: {

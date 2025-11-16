@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import useSWR from "swr";
-import { Plus, Pencil, Trash2, RefreshCcw, Shapes } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "@/hooks/useAuth";
-import { del, get, patch, post } from "@/lib/api";
-import type { Category, PaginatedResult } from "@/types/rbac";
-import { categorySchema, type CategorySchema } from "@/lib/validators";
-import { FALLBACK_CATEGORIES } from "@/data/fallbacks";
-import { HasPermission } from "@/components/rbac/HasPermission";
-import { Modal } from "@/components/ui/Modal";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import useSWR from 'swr';
+import { Plus, Pencil, Trash2, RefreshCcw, Shapes } from 'lucide-react';
+import { useMemo, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useAuth } from '@/hooks/useAuth';
+import { del, get, patch, post } from '@/lib/api';
+import type { Category, PaginatedResult } from '@/types/rbac';
+import { categorySchema, type CategorySchema } from '@/lib/validators';
+import { FALLBACK_CATEGORIES } from '@/data/fallbacks';
+import { HasPermission } from '@/components/rbac/HasPermission';
+import { Modal } from '@/components/ui/Modal';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 
 const fetchCategories = ([path, token]: [string, string]) =>
   get<PaginatedResult<Category>>(path, { accessToken: token });
@@ -22,21 +22,23 @@ function NoAccessMessage() {
     <div className="glass rounded-2xl border border-white/20 p-10 text-center backdrop-blur-md">
       <Shapes className="mx-auto mb-4 h-10 w-10 text-white/40" />
       <p className="text-lg font-semibold text-white">Categories unavailable</p>
-      <p className="text-sm text-white/70">You do not have permission to manage assortment categories.</p>
+      <p className="text-sm text-white/70">
+        You do not have permission to manage assortment categories.
+      </p>
     </div>
   );
 }
 
 export default function CategoriesPage() {
   const { tokens, hasPermission } = useAuth();
-  const canCreate = hasPermission("category.create");
-  const canUpdate = hasPermission("category.update");
-  const canDelete = hasPermission("category.delete");
+  const canCreate = hasPermission('category.create');
+  const canUpdate = hasPermission('category.update');
+  const canDelete = hasPermission('category.delete');
 
   const { data, error, isLoading, mutate } = useSWR(
-    tokens?.accessToken ? ["/categories", tokens.accessToken] : null,
+    tokens?.accessToken ? ['/categories', tokens.accessToken] : null,
     fetchCategories,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
   const categories = useMemo(() => data?.data ?? FALLBACK_CATEGORIES, [data]);
@@ -57,8 +59,8 @@ export default function CategoriesPage() {
   } = useForm<CategorySchema>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: '',
+      description: '',
     },
   });
 
@@ -75,7 +77,7 @@ export default function CategoriesPage() {
     if (!canCreate) return;
     setEditingCategory(null);
     setFormError(null);
-    reset({ name: "", description: "" });
+    reset({ name: '', description: '' });
     setIsModalOpen(true);
   };
 
@@ -83,7 +85,7 @@ export default function CategoriesPage() {
     if (!canUpdate) return;
     setEditingCategory(category);
     setFormError(null);
-    reset({ name: category.name, description: category.description ?? "" });
+    reset({ name: category.name, description: category.description ?? '' });
     setIsModalOpen(true);
   };
 
@@ -94,7 +96,7 @@ export default function CategoriesPage() {
 
   const upsertCategory = async (values: CategorySchema) => {
     if (!tokens?.accessToken) {
-      setFormError("Missing access token. Please re-authenticate.");
+      setFormError('Missing access token. Please re-authenticate.');
       return;
     }
 
@@ -107,11 +109,16 @@ export default function CategoriesPage() {
     };
 
     const optimisticData = (() => {
-      const current = baseSnapshot ?? { data: FALLBACK_CATEGORIES, total: FALLBACK_CATEGORIES.length };
+      const current = baseSnapshot ?? {
+        data: FALLBACK_CATEGORIES,
+        total: FALLBACK_CATEGORIES.length,
+      };
       if (editingCategory) {
         return {
           ...current,
-          data: current.data.map((category) => (category.id === editingCategory.id ? optimisticRecord : category)),
+          data: current.data.map((category) =>
+            category.id === editingCategory.id ? optimisticRecord : category,
+          ),
         };
       }
       return {
@@ -128,7 +135,7 @@ export default function CategoriesPage() {
         ? await patch<Category>(`/categories/${editingCategory.id}`, values, {
             accessToken: tokens.accessToken,
           })
-        : await post<Category>("/categories", values, {
+        : await post<Category>('/categories', values, {
             accessToken: tokens.accessToken,
           });
 
@@ -139,7 +146,7 @@ export default function CategoriesPage() {
             return {
               ...safe,
               data: safe.data.map((category) =>
-                category.id === editingCategory.id ? payload : category
+                category.id === editingCategory.id ? payload : category,
               ),
             };
           }
@@ -153,7 +160,7 @@ export default function CategoriesPage() {
             total: exists ? safe.total : safe.total + 1,
           };
         },
-        { revalidate: false, populateCache: true }
+        { revalidate: false, populateCache: true },
       );
 
       setIsModalOpen(false);
@@ -163,7 +170,7 @@ export default function CategoriesPage() {
       await mutate();
     } catch (err) {
       await mutate(baseSnapshot, { revalidate: false, populateCache: true });
-      setFormError(err instanceof Error ? err.message : "Unable to save category");
+      setFormError(err instanceof Error ? err.message : 'Unable to save category');
     }
   };
 
@@ -186,14 +193,17 @@ export default function CategoriesPage() {
   const confirmDelete = async () => {
     if (!deleteTarget) return;
     if (!tokens?.accessToken) {
-      setDeleteError("Missing access token. Please re-authenticate.");
+      setDeleteError('Missing access token. Please re-authenticate.');
       return;
     }
     setIsDeleting(true);
     const baseSnapshot = snapshotData();
     const targetId = deleteTarget.id;
     const optimisticData = (() => {
-      const current = baseSnapshot ?? { data: FALLBACK_CATEGORIES, total: FALLBACK_CATEGORIES.length };
+      const current = baseSnapshot ?? {
+        data: FALLBACK_CATEGORIES,
+        total: FALLBACK_CATEGORIES.length,
+      };
       const filtered = current.data.filter((category) => category.id !== targetId);
       return {
         ...current,
@@ -212,7 +222,7 @@ export default function CategoriesPage() {
       await mutate();
     } catch (err) {
       await mutate(baseSnapshot, { revalidate: false, populateCache: true });
-      setDeleteError(err instanceof Error ? err.message : "Unable to delete category");
+      setDeleteError(err instanceof Error ? err.message : 'Unable to delete category');
     } finally {
       setIsDeleting(false);
     }
@@ -273,7 +283,7 @@ export default function CategoriesPage() {
                     <p className="font-medium text-white">{category.name}</p>
                     <p className="text-xs text-white/50">ID {category.id}</p>
                   </td>
-                  <td className="px-6 py-4 text-white/70">{category.description ?? "—"}</td>
+                  <td className="px-6 py-4 text-white/70">{category.description ?? '—'}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button
@@ -299,85 +309,85 @@ export default function CategoriesPage() {
             </tbody>
           </table>
         </div>
-          <Modal
-            title={editingCategory ? "Edit category" : "New category"}
-            description="Organize your catalog taxonomy before syncing downstream."
-            isOpen={isModalOpen}
-            onClose={closeModal}
-            footer={
-              <>
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="w-full rounded-lg border border-white/20 bg-transparent px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto"
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  form="category-form"
-                  className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:from-blue-600 hover:to-purple-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Saving…" : editingCategory ? "Save changes" : "Create category"}
-                </button>
-              </>
-            }
-          >
-            <form id="category-form" className="space-y-4" onSubmit={onSubmit}>
-              <label className="block text-sm font-medium text-white">
-                Name
-                <input
-                  type="text"
-                  className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/50 focus:border-blue-400 focus:outline-none backdrop-blur-sm"
-                  placeholder="Hardware"
-                  {...register("name")}
-                />
-                {errors.name && (
-                  <span className="mt-1 block text-xs text-red-300">{errors.name.message}</span>
-                )}
-              </label>
-              <label className="block text-sm font-medium text-white">
-                Description
-                <textarea
-                  className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder-white/50 focus:border-blue-400 focus:outline-none backdrop-blur-sm"
-                  rows={4}
-                  placeholder="Terminals, scanners, in-lane devices"
-                  {...register("description")}
-                />
-                {errors.description && (
-                  <span className="mt-1 block text-xs text-red-300">
-                    {errors.description.message}
-                  </span>
-                )}
-              </label>
-              {formError && (
-                <div className="glass rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-200 backdrop-blur-md">
-                  {formError}
-                </div>
+        <Modal
+          title={editingCategory ? 'Edit category' : 'New category'}
+          description="Organize your catalog taxonomy before syncing downstream."
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          footer={
+            <>
+              <button
+                type="button"
+                onClick={closeModal}
+                className="w-full rounded-lg border border-white/20 bg-transparent px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto"
+                disabled={isSubmitting}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                form="category-form"
+                className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:from-blue-600 hover:to-purple-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Saving…' : editingCategory ? 'Save changes' : 'Create category'}
+              </button>
+            </>
+          }
+        >
+          <form id="category-form" className="space-y-4" onSubmit={onSubmit}>
+            <label className="block text-sm font-medium text-white">
+              Name
+              <input
+                type="text"
+                className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/50 focus:border-blue-400 focus:outline-none backdrop-blur-sm"
+                placeholder="Hardware"
+                {...register('name')}
+              />
+              {errors.name && (
+                <span className="mt-1 block text-xs text-red-300">{errors.name.message}</span>
               )}
-            </form>
-          </Modal>
-
-          <ConfirmDialog
-            title="Delete category"
-            description={deleteTarget ? `Remove ${deleteTarget.name}?` : undefined}
-            isOpen={Boolean(deleteTarget)}
-            onClose={dismissDeleteDialog}
-            onConfirm={confirmDelete}
-            confirmLabel="Delete"
-            isLoading={isDeleting}
-          >
-            <p className="text-sm text-white/70">
-              Deleting a category will detach it from any associated products.
-            </p>
-            {deleteError && (
-              <p className="mt-2 glass rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-200 backdrop-blur-md">
-                {deleteError}
-              </p>
+            </label>
+            <label className="block text-sm font-medium text-white">
+              Description
+              <textarea
+                className="mt-1 w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder-white/50 focus:border-blue-400 focus:outline-none backdrop-blur-sm"
+                rows={4}
+                placeholder="Terminals, scanners, in-lane devices"
+                {...register('description')}
+              />
+              {errors.description && (
+                <span className="mt-1 block text-xs text-red-300">
+                  {errors.description.message}
+                </span>
+              )}
+            </label>
+            {formError && (
+              <div className="glass rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-200 backdrop-blur-md">
+                {formError}
+              </div>
             )}
-          </ConfirmDialog>
+          </form>
+        </Modal>
+
+        <ConfirmDialog
+          title="Delete category"
+          description={deleteTarget ? `Remove ${deleteTarget.name}?` : undefined}
+          isOpen={Boolean(deleteTarget)}
+          onClose={dismissDeleteDialog}
+          onConfirm={confirmDelete}
+          confirmLabel="Delete"
+          isLoading={isDeleting}
+        >
+          <p className="text-sm text-white/70">
+            Deleting a category will detach it from any associated products.
+          </p>
+          {deleteError && (
+            <p className="mt-2 glass rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-200 backdrop-blur-md">
+              {deleteError}
+            </p>
+          )}
+        </ConfirmDialog>
       </div>
     </HasPermission>
   );

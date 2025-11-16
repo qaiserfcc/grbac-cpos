@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import type { PermissionName } from "@/types/rbac";
+import { ReactNode } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import type { PermissionName } from '@/types/rbac';
 
 interface HasPermissionProps {
   permission: PermissionName | string;

@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import Link from "next/link";
-import { LogOut, Home, Shapes, Package, Users } from "lucide-react";
-import clsx from "clsx";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/context/ToastContext";
-import { HasPermission } from "@/components/rbac/HasPermission";
+import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { LogOut, Home, Shapes, Package, Users } from 'lucide-react';
+import clsx from 'clsx';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/context/ToastContext';
+import { HasPermission } from '@/components/rbac/HasPermission';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { tokens, user, logout } = useAuth();
@@ -18,10 +18,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [mounted, setMounted] = useState(false);
 
   const navigation = [
-    { name: "Dashboard", href: "/dashboard", icon: Home, permission: null },
-    { name: "Categories", href: "/dashboard/categories", icon: Shapes, permission: "category.read" },
-    { name: "Products", href: "/dashboard/products", icon: Package, permission: "product.read" },
-    { name: "Users", href: "/dashboard/users", icon: Users, permission: "rbac.manage.users" },
+    { name: 'Dashboard', href: '/dashboard', icon: Home, permission: null },
+    {
+      name: 'Categories',
+      href: '/dashboard/categories',
+      icon: Shapes,
+      permission: 'category.read',
+    },
+    { name: 'Products', href: '/dashboard/products', icon: Package, permission: 'product.read' },
+    { name: 'Users', href: '/dashboard/users', icon: Users, permission: 'rbac.manage.users' },
   ];
 
   useEffect(() => {
@@ -30,8 +35,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (mounted && !tokens) {
-      toast.error("Please log in to access the dashboard");
-      router.replace("/login");
+      toast.error('Please log in to access the dashboard');
+      router.replace('/login');
     }
   }, [tokens, router, toast, mounted]);
 
@@ -39,7 +44,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     try {
       setIsLoggingOut(true);
       await logout();
-      router.replace("/login");
+      router.replace('/login');
     } finally {
       setIsLoggingOut(false);
     }
@@ -72,12 +77,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             const content = (
-              <div className={clsx(
-                "group flex items-center rounded-lg px-2 py-2 text-sm font-medium transition",
-                isActive
-                  ? "bg-white/20 text-white"
-                  : "text-white/70 hover:bg-white/10 hover:text-white"
-              )}>
+              <div
+                className={clsx(
+                  'group flex items-center rounded-lg px-2 py-2 text-sm font-medium transition',
+                  isActive
+                    ? 'bg-white/20 text-white'
+                    : 'text-white/70 hover:bg-white/10 hover:text-white',
+                )}
+              >
                 <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
                 {item.name}
               </div>
@@ -86,9 +93,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             if (item.permission) {
               return (
                 <HasPermission key={item.name} permission={item.permission}>
-                  <Link href={item.href}>
-                    {content}
-                  </Link>
+                  <Link href={item.href}>{content}</Link>
                 </HasPermission>
               );
             }
@@ -109,9 +114,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <p className="gradient-text text-lg font-semibold uppercase tracking-wide">CPOS</p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="hidden text-sm text-white/80 sm:inline-flex">
-              {user?.email}
-            </div>
+            <div className="hidden text-sm text-white/80 sm:inline-flex">{user?.email}</div>
             <button
               type="button"
               onClick={handleLogout}
@@ -119,7 +122,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               disabled={isLoggingOut}
             >
               <LogOut className="h-4 w-4" />
-              {isLoggingOut ? "Signing out…" : "Sign out"}
+              {isLoggingOut ? 'Signing out…' : 'Sign out'}
             </button>
           </div>
         </header>

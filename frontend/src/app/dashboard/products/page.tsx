@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import useSWR from "swr";
-import { Plus, Pencil, Trash2, RefreshCcw, PackageSearch } from "lucide-react";
-import { useMemo, useState, useRef } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "@/hooks/useAuth";
-import { del, get, post, put, patch } from "@/lib/api";
-import type { Category, PaginatedResult, Product } from "@/types/rbac";
-import { productSchema, type ProductSchema } from "@/lib/validators";
-import { Modal } from "@/components/ui/Modal";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import { FALLBACK_PRODUCTS, FALLBACK_CATEGORIES } from "@/data/fallbacks";
-import { HasPermission } from "@/components/rbac/HasPermission";
+import useSWR from 'swr';
+import { Plus, Pencil, Trash2, RefreshCcw, PackageSearch } from 'lucide-react';
+import { useMemo, useState, useRef } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useAuth } from '@/hooks/useAuth';
+import { del, get, post, patch } from '@/lib/api';
+import type { Category, PaginatedResult, Product } from '@/types/rbac';
+import { productSchema, type ProductSchema } from '@/lib/validators';
+import { Modal } from '@/components/ui/Modal';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { FALLBACK_PRODUCTS, FALLBACK_CATEGORIES } from '@/data/fallbacks';
+import { HasPermission } from '@/components/rbac/HasPermission';
 
 const fetchProducts = ([path, token]: [string, string]) =>
   get<PaginatedResult<Product>>(path, { accessToken: token });
 
 const fetchCategories = ([path, token]: [string, string]) =>
   get<PaginatedResult<Category>>(path, { accessToken: token });
-const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
 function NoAccessMessage() {
   return (
@@ -33,24 +33,27 @@ function NoAccessMessage() {
 
 export default function ProductsPage() {
   const { tokens, hasPermission } = useAuth();
-  const canCreate = hasPermission("product.create");
-  const canUpdate = hasPermission("product.update");
-  const canDelete = hasPermission("product.delete");
+  const canCreate = hasPermission('product.create');
+  const canUpdate = hasPermission('product.update');
+  const canDelete = hasPermission('product.delete');
 
   const { data, error, isLoading, mutate } = useSWR(
-    tokens?.accessToken ? ["/products", tokens.accessToken] : null,
+    tokens?.accessToken ? ['/products', tokens.accessToken] : null,
     fetchProducts,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
   const { data: categoriesResponse } = useSWR(
-    tokens?.accessToken ? ["/categories", tokens.accessToken] : null,
+    tokens?.accessToken ? ['/categories', tokens.accessToken] : null,
     fetchCategories,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
   const products = useMemo(() => data?.data ?? FALLBACK_PRODUCTS, [data]);
-  const categories = useMemo(() => categoriesResponse?.data ?? FALLBACK_CATEGORIES, [categoriesResponse]);
+  const categories = useMemo(
+    () => categoriesResponse?.data ?? FALLBACK_CATEGORIES,
+    [categoriesResponse],
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -68,11 +71,11 @@ export default function ProductsPage() {
   } = useForm<ProductSchema>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: "",
-      sku: "",
+      name: '',
+      sku: '',
       price: 0,
       stock: 0,
-      categoryId: "",
+      categoryId: '',
     },
   });
 
@@ -90,11 +93,11 @@ export default function ProductsPage() {
     setEditingProduct(null);
     setFormError(null);
     reset({
-      name: "",
-      sku: "",
+      name: '',
+      sku: '',
       price: 0,
       stock: 0,
-      categoryId: categories[0]?.id ?? "",
+      categoryId: categories[0]?.id ?? '',
     });
     setIsModalOpen(true);
   };
@@ -120,7 +123,7 @@ export default function ProductsPage() {
 
   const upsertProduct = async (values: ProductSchema) => {
     if (!tokens?.accessToken) {
-      setFormError("Missing access token. Please re-authenticate.");
+      setFormError('Missing access token. Please re-authenticate.');
       return;
     }
 
@@ -139,7 +142,9 @@ export default function ProductsPage() {
       if (editingProduct) {
         return {
           ...current,
-          data: current.data.map((product) => (product.id === editingProduct.id ? optimisticRecord : product)),
+          data: current.data.map((product) =>
+            product.id === editingProduct.id ? optimisticRecord : product,
+          ),
         };
       }
       return {
@@ -156,7 +161,7 @@ export default function ProductsPage() {
         ? await patch<Product>(`/products/${editingProduct.id}`, values, {
             accessToken: tokens.accessToken,
           })
-        : await post<Product>("/products", values, {
+        : await post<Product>('/products', values, {
             accessToken: tokens.accessToken,
           });
 
@@ -172,14 +177,14 @@ export default function ProductsPage() {
             return {
               ...safe,
               data: safe.data.map((product) =>
-                product.id === editingProduct.id ? hydratedPayload : product
+                product.id === editingProduct.id ? hydratedPayload : product,
               ),
             };
           }
           const exists = safe.data.some((product) => product.id === hydratedPayload.id);
           const nextData = exists
             ? safe.data.map((product) =>
-                product.id === hydratedPayload.id ? hydratedPayload : product
+                product.id === hydratedPayload.id ? hydratedPayload : product,
               )
             : [hydratedPayload, ...safe.data];
           return {
@@ -188,7 +193,7 @@ export default function ProductsPage() {
             total: exists ? safe.total : safe.total + 1,
           };
         },
-        { revalidate: false, populateCache: true }
+        { revalidate: false, populateCache: true },
       );
 
       setIsModalOpen(false);
@@ -198,7 +203,7 @@ export default function ProductsPage() {
       await mutate();
     } catch (err) {
       await mutate(baseSnapshot, { revalidate: false, populateCache: true });
-      setFormError(err instanceof Error ? err.message : "Unable to save product");
+      setFormError(err instanceof Error ? err.message : 'Unable to save product');
     }
   };
 
@@ -221,7 +226,7 @@ export default function ProductsPage() {
   const confirmDelete = async () => {
     if (!deleteTarget) return;
     if (!tokens?.accessToken) {
-      setDeleteError("Missing access token. Please re-authenticate.");
+      setDeleteError('Missing access token. Please re-authenticate.');
       return;
     }
     setIsDeleting(true);
@@ -247,7 +252,7 @@ export default function ProductsPage() {
       await mutate();
     } catch (err) {
       await mutate(baseSnapshot, { revalidate: false, populateCache: true });
-      setDeleteError(err instanceof Error ? err.message : "Unable to delete product");
+      setDeleteError(err instanceof Error ? err.message : 'Unable to delete product');
     } finally {
       setIsDeleting(false);
     }
@@ -312,7 +317,7 @@ export default function ProductsPage() {
                     <p className="text-xs text-white/50">ID {product.id}</p>
                   </td>
                   <td className="px-6 py-4">{product.sku}</td>
-                  <td className="px-6 py-4">{product.category?.name ?? "—"}</td>
+                  <td className="px-6 py-4">{product.category?.name ?? '—'}</td>
                   <td className="px-6 py-4">{currency.format(product.price)}</td>
                   <td className="px-6 py-4">{product.stock}</td>
                   <td className="px-6 py-4">
@@ -343,7 +348,7 @@ export default function ProductsPage() {
       </div>
 
       <Modal
-        title={editingProduct ? "Edit product" : "New product"}
+        title={editingProduct ? 'Edit product' : 'New product'}
         description="Manage inventory details synced to the RBAC-protected API."
         isOpen={isModalOpen}
         onClose={closeModal}
@@ -363,7 +368,7 @@ export default function ProductsPage() {
               className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:bg-indigo-300 sm:w-auto"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Saving…" : editingProduct ? "Save changes" : "Create product"}
+              {isSubmitting ? 'Saving…' : editingProduct ? 'Save changes' : 'Create product'}
             </button>
           </>
         }
@@ -376,7 +381,7 @@ export default function ProductsPage() {
                 type="text"
                 className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-900 focus:border-indigo-500 focus:outline-none"
                 placeholder="Kitchen Display Suite"
-                {...register("name")}
+                {...register('name')}
               />
               {errors.name && (
                 <span className="mt-1 block text-xs text-red-500">{errors.name.message}</span>
@@ -388,7 +393,7 @@ export default function ProductsPage() {
                 type="text"
                 className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-900 focus:border-indigo-500 focus:outline-none"
                 placeholder="KDS-200"
-                {...register("sku")}
+                {...register('sku')}
               />
               {errors.sku && (
                 <span className="mt-1 block text-xs text-red-500">{errors.sku.message}</span>
@@ -404,7 +409,7 @@ export default function ProductsPage() {
                 min={0}
                 className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-900 focus:border-indigo-500 focus:outline-none"
                 placeholder="1899"
-                {...register("price", { valueAsNumber: true })}
+                {...register('price', { valueAsNumber: true })}
               />
               {errors.price && (
                 <span className="mt-1 block text-xs text-red-500">{errors.price.message}</span>
@@ -417,7 +422,7 @@ export default function ProductsPage() {
                 min={0}
                 className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-900 focus:border-indigo-500 focus:outline-none"
                 placeholder="6"
-                {...register("stock", { valueAsNumber: true })}
+                {...register('stock', { valueAsNumber: true })}
               />
               {errors.stock && (
                 <span className="mt-1 block text-xs text-red-500">{errors.stock.message}</span>
@@ -428,7 +433,7 @@ export default function ProductsPage() {
             Category
             <select
               className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-900 focus:border-indigo-500 focus:outline-none"
-              {...register("categoryId")}
+              {...register('categoryId')}
             >
               <option value="" disabled>
                 Select category
