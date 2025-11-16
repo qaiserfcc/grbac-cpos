@@ -1,6 +1,81 @@
 import { Router } from 'express';
+import { Schema } from 'express-validator';
 
 import { login, logout, refresh, register } from '../controllers/auth.controller';
+import { validate } from '../middleware/validation.middleware';
+
+const loginValidation: Schema = {
+  identifier: {
+    in: ['body'],
+    isString: { errorMessage: 'Identifier is required' },
+    trim: true,
+    isLength: {
+      options: { min: 3 },
+      errorMessage: 'Identifier must be at least 3 characters long',
+    },
+  },
+  password: {
+    in: ['body'],
+    isString: { errorMessage: 'Password is required' },
+    isLength: {
+      options: { min: 8 },
+      errorMessage: 'Password must be at least 8 characters long',
+    },
+  },
+};
+
+const registerValidation: Schema = {
+  username: {
+    in: ['body'],
+    isString: { errorMessage: 'Username is required' },
+    trim: true,
+    isLength: {
+      options: { min: 3 },
+      errorMessage: 'Username must be at least 3 characters long',
+    },
+  },
+  email: {
+    in: ['body'],
+    isEmail: { errorMessage: 'A valid email is required' },
+    normalizeEmail: true,
+  },
+  password: {
+    in: ['body'],
+    isString: { errorMessage: 'Password is required' },
+    isLength: {
+      options: { min: 8 },
+      errorMessage: 'Password must be at least 8 characters long',
+    },
+  },
+  fullName: {
+    in: ['body'],
+    isString: { errorMessage: 'Full name is required' },
+    notEmpty: { errorMessage: 'Full name is required' },
+  },
+  roles: {
+    in: ['body'],
+    isArray: {
+      options: { min: 1 },
+      errorMessage: 'At least one role must be provided',
+    },
+  },
+  'roles.*': {
+    in: ['body'],
+    isString: { errorMessage: 'Roles must be strings' },
+    notEmpty: { errorMessage: 'Roles cannot be empty' },
+  },
+};
+
+const refreshValidation: Schema = {
+  refreshToken: {
+    in: ['body'],
+    isString: { errorMessage: 'Refresh token is required' },
+    isLength: {
+      options: { min: 20 },
+      errorMessage: 'Refresh token must be at least 20 characters long',
+    },
+  },
+};
 
 const router = Router();
 
@@ -30,7 +105,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/login', login);
+router.post('/login', validate(loginValidation), login);
 
 /**
  * @swagger
@@ -65,7 +140,7 @@ router.post('/login', login);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/refresh', refresh);
+router.post('/refresh', validate(refreshValidation), refresh);
 
 /**
  * @swagger
@@ -99,7 +174,7 @@ router.post('/refresh', refresh);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/logout', logout);
+router.post('/logout', validate(refreshValidation), logout);
 
 /**
  * @swagger
@@ -136,6 +211,6 @@ router.post('/logout', logout);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/register', register);
+router.post('/register', validate(registerValidation), register);
 
 export default router;

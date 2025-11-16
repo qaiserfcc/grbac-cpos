@@ -12,3 +12,4 @@ This file contains the architectural decisions and design patterns for the Cloud
 4. **Authentication and Authorization**: Implemented JWT-based authentication with custom RBAC middleware to secure API endpoints and control user permissions granularly.
 5. **State Management**: Used SWR for client-side data fetching and caching in the frontend, providing automatic revalidation and optimistic updates without complex state management libraries.
 6. **Testing Strategy**: Employed Playwright for E2E testing across multiple browsers, Jest for unit tests, and integrated CI/CD for automated quality checks.
+7. **Architecture & NFR Baseline** (2025-11-16): Captured the end-to-end system diagram plus non-functional targets (performance, resilience, security, observability, DR) in `docs/architecture.md`; future architectural changes must update this source of truth and link from PRs.

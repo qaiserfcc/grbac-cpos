@@ -8,103 +8,105 @@ datasource db {
 }
 
 model User {
-  id          String      @id @default(uuid())
-  username    String      @unique
-  email       String      @unique
-  passwordHash String     @map("password_hash")
-  fullName    String?     @map("full_name")
-  isEnabled   Boolean     @default(true) @map("is_enabled")
-  createdAt   DateTime    @default(now()) @map("created_at")
-  updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at")
-  roles       UserRole[]
-  sessions    Session[]
-  categories  Category[]  @relation("CategoryCreatedBy")
-  products    Product[]   @relation("ProductCreatedBy")
+  id                   String                @id @default(uuid())
+  username             String                @unique
+  email                String                @unique
+  passwordHash         String                @map("password_hash")
+  fullName             String?               @map("full_name")
+  isEnabled            Boolean               @default(true) @map("is_enabled")
+  createdAt            DateTime              @default(now()) @map("created_at")
+  updatedAt            DateTime              @default(now()) @updatedAt @map("updated_at")
+  roles                UserRole[]
+  sessions             Session[]
+  categories           Category[]            @relation("CategoryCreatedBy")
+  products             Product[]             @relation("ProductCreatedBy")
+  sales                Sale[]
+  inventoryAdjustments InventoryAdjustment[]
 
   @@map("users")
 }
 
 model Role {
-  id          String           @id @default(uuid())
-  name        String           @unique
-  description String?
-  createdAt   DateTime         @default(now()) @map("created_at")
-  userRoles   UserRole[]
+  id              String           @id @default(uuid())
+  name            String           @unique
+  description     String?
+  createdAt       DateTime         @default(now()) @map("created_at")
+  userRoles       UserRole[]
   rolePermissions RolePermission[]
-  roleWidgets RoleWidget[]
+  roleWidgets     RoleWidget[]
 
   @@map("roles")
 }
 
 model Permission {
-  id          String           @id @default(uuid())
-  name        String           @unique
-  module      String?
-  action      String?
-  description String?
+  id              String           @id @default(uuid())
+  name            String           @unique
+  module          String?
+  action          String?
+  description     String?
   rolePermissions RolePermission[]
 
   @@map("permissions")
 }
 
 model RolePermission {
-  id            String    @id @default(uuid())
-  roleId        String    @map("role_id")
-  permissionId  String    @map("permission_id")
-  role          Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission    Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  id           String     @id @default(uuid())
+  roleId       String     @map("role_id")
+  permissionId String     @map("permission_id")
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
   @@unique([roleId, permissionId])
   @@map("role_permissions")
 }
 
 model UserRole {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
-  roleId    String   @map("role_id")
-  assignedBy String? @map("assigned_by")
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  roleId     String   @map("role_id")
+  assignedBy String?  @map("assigned_by")
   assignedAt DateTime @default(now()) @map("assigned_at")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, roleId])
   @@map("user_roles")
 }
 
 model DashboardWidget {
-  id            String       @id @default(uuid())
-  title         String
-  widgetKey     String       @unique @map("widget_key")
-  widgetType    String?      @map("widget_type")
-  dataSource    String?      @map("data_source")
-  defaultVisible Boolean     @default(false) @map("default_visible")
-  createdAt     DateTime     @default(now()) @map("created_at")
-  roleWidgets   RoleWidget[]
+  id             String       @id @default(uuid())
+  title          String
+  widgetKey      String       @unique @map("widget_key")
+  widgetType     String?      @map("widget_type")
+  dataSource     String?      @map("data_source")
+  defaultVisible Boolean      @default(false) @map("default_visible")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  roleWidgets    RoleWidget[]
 
   @@map("dashboard_widgets")
 }
 
 model RoleWidget {
-  id        String   @id @default(uuid())
-  roleId    String   @map("role_id")
-  widgetId  String   @map("widget_id")
-  visible   Boolean  @default(true)
-  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  widget    DashboardWidget @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+  id       String          @id @default(uuid())
+  roleId   String          @map("role_id")
+  widgetId String          @map("widget_id")
+  visible  Boolean         @default(true)
+  role     Role            @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  widget   DashboardWidget @relation(fields: [widgetId], references: [id], onDelete: Cascade)
 
   @@unique([roleId, widgetId])
   @@map("role_widget")
 }
 
 model Session {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
   token     String
-  ipAddress String?  @map("ip_address")
-  userAgent String?  @map("user_agent")
-  createdAt DateTime @default(now()) @map("created_at")
+  ipAddress String?   @map("ip_address")
+  userAgent String?   @map("user_agent")
+  createdAt DateTime  @default(now()) @map("created_at")
   expiresAt DateTime? @map("expires_at")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
@@ -123,17 +125,120 @@ model Category {
 }
 
 model Product {
-  id          String    @id @default(uuid())
+  id          String     @id @default(uuid())
   name        String
-  sku         String?   @unique
-  categoryId  String?   @map("category_id")
-  price       Decimal   @default(0)
-  stock       Int       @default(0)
-  createdById String?   @map("created_by")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
-  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  createdBy   User?     @relation("ProductCreatedBy", fields: [createdById], references: [id])
+  sku         String?    @unique
+  categoryId  String?    @map("category_id")
+  price       Decimal    @default(0)
+  stock       Int        @default(0)
+  createdById String?    @map("created_by")
+  supplierId  String?    @map("supplier_id")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at")
+  category    Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdBy   User?      @relation("ProductCreatedBy", fields: [createdById], references: [id])
+  supplier    Supplier?  @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  saleItems   SaleItem[]
+  inventory   Inventory?
 
   @@map("products")
+}
+
+model Customer {
+  id          String   @id @default(uuid())
+  externalId  String?  @unique @map("external_id")
+  fullName    String   @map("full_name")
+  email       String?  @unique
+  phone       String?
+  loyaltyTier String?  @map("loyalty_tier")
+  isVip       Boolean  @default(false) @map("is_vip")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  sales       Sale[]
+
+  @@index([email])
+  @@map("customers")
+}
+
+model Supplier {
+  id             String      @id @default(uuid())
+  name           String
+  contactName    String?     @map("contact_name")
+  contactEmail   String?     @map("contact_email")
+  contactPhone   String?     @map("contact_phone")
+  status         String      @default("ACTIVE")
+  complianceNote String?     @map("compliance_note")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @default(now()) @updatedAt @map("updated_at")
+  products       Product[]
+  inventory      Inventory[]
+
+  @@index([status])
+  @@map("suppliers")
+}
+
+model Sale {
+  id            String     @id @default(uuid())
+  receiptNumber String     @unique @map("receipt_number")
+  total         Decimal    @default(0)
+  taxTotal      Decimal    @default(0) @map("tax_total")
+  discountTotal Decimal    @default(0) @map("discount_total")
+  status        String     @default("COMPLETED")
+  paymentMethod String     @map("payment_method")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @default(now()) @updatedAt @map("updated_at")
+  createdById   String?    @map("created_by")
+  customerId    String?    @map("customer_id")
+  createdBy     User?      @relation(fields: [createdById], references: [id])
+  customer      Customer?  @relation(fields: [customerId], references: [id])
+  items         SaleItem[]
+
+  @@index([customerId])
+  @@index([createdAt])
+  @@map("sales")
+}
+
+model SaleItem {
+  id        String  @id @default(uuid())
+  saleId    String  @map("sale_id")
+  productId String  @map("product_id")
+  quantity  Int     @default(1)
+  unitPrice Decimal @map("unit_price")
+  lineTotal Decimal @map("line_total")
+  sale      Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@index([saleId])
+  @@index([productId])
+  @@map("sale_items")
+}
+
+model Inventory {
+  id             String                @id @default(uuid())
+  productId      String                @unique @map("product_id")
+  supplierId     String?               @map("supplier_id")
+  quantityOnHand Int                   @default(0) @map("quantity_on_hand")
+  reorderPoint   Int                   @default(0) @map("reorder_point")
+  safetyStock    Int                   @default(0) @map("safety_stock")
+  updatedAt      DateTime              @default(now()) @updatedAt @map("updated_at")
+  product        Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
+  supplier       Supplier?             @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  adjustments    InventoryAdjustment[]
+
+  @@map("inventory")
+}
+
+model InventoryAdjustment {
+  id          String    @id @default(uuid())
+  inventoryId String    @map("inventory_id")
+  delta       Int
+  reason      String?
+  reference   String?
+  createdById String?   @map("created_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  createdBy   User?     @relation(fields: [createdById], references: [id])
+
+  @@index([inventoryId])
+  @@map("inventory_adjustments")
 }

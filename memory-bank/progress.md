@@ -18,7 +18,14 @@
 - Dashboard - Backend API Implementation + Tests
 - Dashboard - Frontend Implementation
 - Dashboard - Playwright Test Verification
+- Frontend Setup - Dependencies, env template, scripts verified
+- Auth & GRBAC Implementation - JWT, refresh sessions, Prisma tests
+- Common Middleware - Validation, logging, rate limiting
 
 ## Doing
 
+- Customers module scaffolding & tests (`_ZENTASKS/04-customers-module`)
+
 ## Next
+
+- Customers, Inventory, Products, Sales/Returns, and Suppliers module implementations (in order per `_ZENTASKS`)

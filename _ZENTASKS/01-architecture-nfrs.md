@@ -1,6 +1,6 @@
 # 01 - Architecture & NFRs
 
-Status: pending
+Status: completed
 Assigned: Copilot
 
 Purpose

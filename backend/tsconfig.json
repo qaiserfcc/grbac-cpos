@@ -12,6 +12,6 @@
     "types": ["node", "jest"],
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src", "prisma"],
-  "exclude": ["dist", "node_modules", "tests"]
+  "include": ["src", "prisma", "tests"],
+  "exclude": ["dist", "node_modules"]
 }

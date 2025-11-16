@@ -1,6 +1,6 @@
 # 01 - OpenAPI Spec Skeleton
 
-Status: pending
+Status: completed
 Assigned: Copilot
 
 Purpose
@@ -16,3 +16,5 @@ Subtasks
 Acceptance Criteria
 
 - `openapi.yaml` or `openapi.json` in repo root
+
+Deliverable: `openapi.yaml` (OpenAPI 3.1) describing auth, products, sales, customers, inventory, suppliers, and dashboard endpoints.

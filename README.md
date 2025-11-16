@@ -10,6 +10,7 @@ Cloud POS (CPOS) is a GRBAC-enabled point of sale platform composed of a backend
 - `memory-bank/` – Project context, decisions, and progress
 - `scripts/` – Automation scripts (e.g., OpenAPI generation)
 - `.github/` – Copilot instructions, workflows, and templates
+- `docs/` – Architecture, CI secrets, runbooks (see `docs/architecture.md` for diagrams & NFRs)
 
 ## Branch Strategy
 
@@ -29,7 +30,7 @@ Workflow:
 
 1. Run lint + tests locally for touched packages.
 2. Update docs/task files if behavior changes.
-3. Ensure PR template checklist is complete.
+3. Ensure PR template checklist is complete (link relevant docs such as `docs/architecture.md` when architecture or NFRs change).
 
 ## Getting Started
 

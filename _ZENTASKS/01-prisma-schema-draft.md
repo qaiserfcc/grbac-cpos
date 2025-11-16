@@ -1,6 +1,6 @@
 # 01 - Prisma Schema Draft
 
-Status: pending
+Status: completed
 Assigned: Copilot
 
 Purpose
@@ -17,3 +17,8 @@ Acceptance Criteria
 
 - `prisma/schema.prisma` draft present
 - Migration file created
+
+Deliverables:
+
+- `backend/prisma/schema.prisma` updated with Customer, Supplier, Sale, SaleItem, Inventory, InventoryAdjustment models + relations.
+- `backend/prisma/migrations/202511160001_domain_entities/migration.sql` captures ALTER/CREATE statements.

@@ -1,0 +1,542 @@
+openapi: 3.1.0
+info:
+  title: CPOS API
+  version: 0.1.0
+  description: |
+    Cloud POS API powering RBAC-governed inventory, sales, and customer operations.
+    This skeleton captures the core paths and components; fields will be refined as implementation stabilizes.
+servers:
+  - url: https://api.cpos.local
+    description: Development
+  - url: https://staging-api.cpos.app
+    description: Staging
+  - url: https://api.cpos.app
+    description: Production
+security:
+  - bearerAuth: []
+tags:
+  - name: auth
+    description: Authentication & session management
+  - name: products
+    description: Product catalog & categories
+  - name: sales
+    description: Sales and returns workflows
+  - name: customers
+    description: Customer accounts and loyalty
+  - name: inventory
+    description: Stock adjustments and supplier coordination
+  - name: reports
+    description: Dashboards and insights
+paths:
+  /auth/login:
+    post:
+      tags: [auth]
+      summary: Exchange credentials for tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Tokens issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+  /auth/register:
+    post:
+      tags: [auth]
+      summary: Register a new operator
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Operator created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /products:
+    get:
+      tags: [products]
+      summary: List products
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/PageSizeParam'
+      responses:
+        '200':
+          description: Paginated products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductList'
+    post:
+      tags: [products]
+      summary: Create product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+  /products/{productId}:
+    parameters:
+      - $ref: '#/components/parameters/ProductId'
+    get:
+      tags: [products]
+      summary: Get product by ID
+      responses:
+        '200':
+          description: Product detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Not found
+    patch:
+      tags: [products]
+      summary: Update product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: Updated product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    delete:
+      tags: [products]
+      summary: Archive product
+      responses:
+        '204':
+          description: Deleted
+  /sales:
+    get:
+      tags: [sales]
+      summary: List sales receipts
+      responses:
+        '200':
+          description: Sales list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaleList'
+    post:
+      tags: [sales]
+      summary: Record sale
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaleInput'
+      responses:
+        '201':
+          description: Sale recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sale'
+  /sales/{saleId}/refund:
+    post:
+      tags: [sales]
+      summary: Issue refund
+      parameters:
+        - $ref: '#/components/parameters/SaleId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundRequest'
+      responses:
+        '200':
+          description: Refund completed
+  /customers:
+    get:
+      tags: [customers]
+      summary: List customers
+      responses:
+        '200':
+          description: Customers list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerList'
+    post:
+      tags: [customers]
+      summary: Create customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerInput'
+      responses:
+        '201':
+          description: Customer created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+  /inventory/adjustments:
+    post:
+      tags: [inventory]
+      summary: Apply inventory adjustment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryAdjustmentInput'
+      responses:
+        '200':
+          description: Adjustment applied
+  /suppliers:
+    get:
+      tags: [inventory]
+      summary: List suppliers
+      responses:
+        '200':
+          description: Suppliers list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierList'
+    post:
+      tags: [inventory]
+      summary: Create supplier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupplierInput'
+      responses:
+        '201':
+          description: Supplier created
+  /reports/dashboard:
+    get:
+      tags: [reports]
+      summary: Fetch KPI widgets
+      parameters:
+        - in: query
+          name: range
+          schema:
+            type: string
+            enum: [today, week, month, quarter]
+        - in: query
+          name: storeId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dashboard payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    PageParam:
+      in: query
+      name: page
+      schema:
+        type: integer
+        minimum: 1
+      description: Page number (1-indexed)
+    PageSizeParam:
+      in: query
+      name: pageSize
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+      description: Number of records per page
+    ProductId:
+      in: path
+      name: productId
+      required: true
+      schema:
+        type: string
+    SaleId:
+      in: path
+      name: saleId
+      required: true
+      schema:
+        type: string
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    RegisterRequest:
+      type: object
+      required: [username, email, password, fullName]
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        fullName:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: integer
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        fullName:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        sku:
+          type: string
+        price:
+          type: number
+          format: float
+        stock:
+          type: integer
+        categoryId:
+          type: string
+    ProductInput:
+      type: object
+      required: [name, sku, price, stock]
+      properties:
+        name:
+          type: string
+        sku:
+          type: string
+        price:
+          type: number
+          format: float
+        stock:
+          type: integer
+        categoryId:
+          type: string
+    ProductList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        total:
+          type: integer
+    Sale:
+      type: object
+      properties:
+        id:
+          type: string
+        total:
+          type: number
+          format: float
+        status:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SaleLine'
+    SaleLine:
+      type: object
+      properties:
+        productId:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+          format: float
+    SaleInput:
+      type: object
+      required: [items, payment]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SaleLine'
+        payment:
+          $ref: '#/components/schemas/PaymentDetails'
+    PaymentDetails:
+      type: object
+      properties:
+        method:
+          type: string
+          enum: [cash, card, split]
+        amount:
+          type: number
+          format: float
+    RefundRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+        reason:
+          type: string
+    SaleList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sale'
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+        fullName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        loyaltyTier:
+          type: string
+    CustomerInput:
+      type: object
+      required: [fullName, email]
+      properties:
+        fullName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+    CustomerList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Customer'
+    InventoryAdjustmentInput:
+      type: object
+      required: [productId, delta]
+      properties:
+        productId:
+          type: string
+        delta:
+          type: integer
+        reason:
+          type: string
+    Supplier:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        contactEmail:
+          type: string
+        status:
+          type: string
+    SupplierInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        contactEmail:
+          type: string
+        phone:
+          type: string
+    SupplierList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Supplier'
+    DashboardResponse:
+      type: object
+      properties:
+        cards:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+              value:
+                type: string
+        charts:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              points:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    label:
+                      type: string
+                    value:
+                      type: number
+    DashboardResponseList:
+      deprecated: true
+      description: Placeholder for future expansions

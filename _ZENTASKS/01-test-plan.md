@@ -1,6 +1,6 @@
 # 01 - Test Plan
 
-Status: pending
+Status: completed
 Assigned: Copilot
 
 Purpose
@@ -16,3 +16,5 @@ Subtasks
 Acceptance Criteria
 
 - Test plan document added
+
+Deliverable: `docs/test-plan.md` covering Playwright flows, coverage targets, and DB strategy.
