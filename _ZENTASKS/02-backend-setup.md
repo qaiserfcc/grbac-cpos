@@ -8,7 +8,7 @@ Status: completed
 
 ## Acceptance Criteria
 
-- `cpos-api` folder exists with a valid `package.json` and `tsconfig.json`.
+- `backend folder exists with a valid `package.json` and `tsconfig.json`.
 - Base dependencies installed: express, typescript, prisma, @prisma/client, pg, bcrypt, jsonwebtoken, joi, winston, jest, supertest, nodemon.
 - Prisma initialized (`prisma/` folder with `schema.prisma`).
 - Example `.env` file created and documented.

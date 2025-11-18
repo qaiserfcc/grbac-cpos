@@ -166,12 +166,12 @@ Document endpoint specs in `README.md` or dedicated `docs/api.md`, including req
 
 ## 12. Acceptance Criteria Checklist
 
-- [ ] `docker-compose up` launches DB, backend, frontend; migrations & seeds run automatically or via documented command.
-- [ ] Login with seeded Super Admin succeeds; dashboard shows all widgets.
-- [ ] Product Admin demo user restricted to product endpoints and widgets.
-- [ ] Middleware correctly blocks unauthorized access (unit + integration tests).
-- [ ] Frontend conditionally renders UI blocks via `HasPermission`/`HasRole` wrappers.
-- [ ] CI workflow runs lint + tests for both backend and frontend on pull requests.
+- `docker-compose up` launches DB, backend, frontend; migrations & seeds run automatically or via      documented command.
+- Login with seeded Super Admin succeeds; dashboard shows all widgets.
+- Product Admin demo user restricted to product endpoints and widgets.
+- Middleware correctly blocks unauthorized access (unit + integration tests).
+- Frontend conditionally renders UI blocks via `HasPermission`/`HasRole` wrappers.
+- CI workflow runs lint + tests for both backend and frontend on pull requests.
 
 ## 13. Nice-to-Haves (Optional)
 

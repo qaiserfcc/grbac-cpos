@@ -218,12 +218,12 @@ Response:
 
 Before finalizing a plan, verify:
 
-- [ ] All phases have logical task progression
-- [ ] Critical path is identified
-- [ ] Priorities align with dependencies
-- [ ] Each task has clear acceptance criteria
-- [ ] Testing strategy is included
-- [ ] Documentation is planned
+- All phases have logical task progression
+- Critical path is identified
+- Priorities align with dependencies
+- Each task has clear acceptance criteria
+- Testing strategy is included
+- Documentation is planned
 
 ## Example Interactions
 
