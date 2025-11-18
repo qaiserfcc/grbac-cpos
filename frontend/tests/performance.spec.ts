@@ -1,6 +1,11 @@
 import { test } from '@playwright/test';
+import { setupMockApi } from './utils/mockApi';
 
 test.describe('Performance Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    await setupMockApi(page);
+  });
+
   test('should load dashboard within acceptable time', async ({ page }) => {
     const startTime = Date.now();
 

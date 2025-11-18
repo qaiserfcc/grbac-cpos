@@ -1,7 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { setupMockApi } from './utils/mockApi';
 
 test.describe('Dashboard Navigation Tests', () => {
   test.beforeEach(async ({ page }) => {
+    await setupMockApi(page);
     // Login first
     await page.goto('/login');
     await page.fill('input[name="identifier"]', 'admin@cpos.local');

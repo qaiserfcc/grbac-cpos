@@ -1,6 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { setupMockApi } from './utils/mockApi';
 
 test.describe('Permission-Based Access Control Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    await setupMockApi(page);
+  });
+
   test('admin should have access to all features', async ({ page }) => {
     // Login as admin
     await page.goto('/login');

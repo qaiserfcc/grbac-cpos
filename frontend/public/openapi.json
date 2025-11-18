@@ -147,7 +147,10 @@
       },
       "LoginRequest": {
         "type": "object",
-        "required": ["identifier", "password"],
+        "required": [
+          "identifier",
+          "password"
+        ],
         "properties": {
           "identifier": {
             "type": "string",
@@ -179,7 +182,13 @@
       },
       "RegisterRequest": {
         "type": "object",
-        "required": ["username", "email", "password", "fullName", "roles"],
+        "required": [
+          "username",
+          "email",
+          "password",
+          "fullName",
+          "roles"
+        ],
         "properties": {
           "username": {
             "type": "string",
@@ -212,7 +221,9 @@
       },
       "RefreshRequest": {
         "type": "object",
-        "required": ["refreshToken"],
+        "required": [
+          "refreshToken"
+        ],
         "properties": {
           "refreshToken": {
             "type": "string",
@@ -223,7 +234,9 @@
       },
       "UpdateUserRolesRequest": {
         "type": "object",
-        "required": ["roles"],
+        "required": [
+          "roles"
+        ],
         "properties": {
           "roles": {
             "type": "array",
@@ -237,7 +250,9 @@
       },
       "UpdateUserStatusRequest": {
         "type": "object",
-        "required": ["isEnabled"],
+        "required": [
+          "isEnabled"
+        ],
         "properties": {
           "isEnabled": {
             "type": "boolean",
@@ -247,7 +262,10 @@
       },
       "CreateRoleRequest": {
         "type": "object",
-        "required": ["name", "description"],
+        "required": [
+          "name",
+          "description"
+        ],
         "properties": {
           "name": {
             "type": "string",
@@ -261,7 +279,10 @@
       },
       "UpdateRoleRequest": {
         "type": "object",
-        "required": ["name", "description"],
+        "required": [
+          "name",
+          "description"
+        ],
         "properties": {
           "name": {
             "type": "string",
@@ -275,7 +296,10 @@
       },
       "AssignRoleRequest": {
         "type": "object",
-        "required": ["userId", "roleId"],
+        "required": [
+          "userId",
+          "roleId"
+        ],
         "properties": {
           "userId": {
             "type": "string",
@@ -291,7 +315,9 @@
       },
       "UpdateRolePermissionsRequest": {
         "type": "object",
-        "required": ["permissions"],
+        "required": [
+          "permissions"
+        ],
         "properties": {
           "permissions": {
             "type": "array",
@@ -305,7 +331,9 @@
       },
       "UpdateRoleWidgetsRequest": {
         "type": "object",
-        "required": ["widgets"],
+        "required": [
+          "widgets"
+        ],
         "properties": {
           "widgets": {
             "type": "array",
@@ -328,7 +356,9 @@
     "/auth/login": {
       "post": {
         "summary": "Authenticate user and get tokens",
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -366,7 +396,9 @@
     "/auth/refresh": {
       "post": {
         "summary": "Refresh access token",
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -414,7 +446,9 @@
     "/auth/logout": {
       "post": {
         "summary": "Logout user and invalidate session",
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -463,7 +497,9 @@
     "/auth/register": {
       "post": {
         "summary": "Register a new user",
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -516,7 +552,9 @@
     "/rbac/roles": {
       "get": {
         "summary": "Get all roles",
-        "tags": ["RBAC"],
+        "tags": [
+          "RBAC"
+        ],
         "responses": {
           "200": {
             "description": "List of roles",
@@ -551,7 +589,9 @@
       },
       "post": {
         "summary": "Create a new role",
-        "tags": ["RBAC"],
+        "tags": [
+          "RBAC"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -614,7 +654,9 @@
     "/rbac/permissions": {
       "get": {
         "summary": "Get all permissions",
-        "tags": ["RBAC"],
+        "tags": [
+          "RBAC"
+        ],
         "responses": {
           "200": {
             "description": "List of permissions",
@@ -635,7 +677,9 @@
     "/rbac/widgets": {
       "get": {
         "summary": "Get all dashboard widgets",
-        "tags": ["RBAC"],
+        "tags": [
+          "RBAC"
+        ],
         "responses": {
           "200": {
             "description": "List of widgets",
@@ -656,7 +700,9 @@
     "/rbac/roles/{roleId}": {
       "patch": {
         "summary": "Update a role",
-        "tags": ["RBAC"],
+        "tags": [
+          "RBAC"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -729,7 +775,9 @@
       },
       "delete": {
         "summary": "Delete a role",
-        "tags": ["RBAC"],
+        "tags": [
+          "RBAC"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -787,7 +835,9 @@
     "/rbac/user-roles": {
       "post": {
         "summary": "Assign role to user",
-        "tags": ["RBAC"],
+        "tags": [
+          "RBAC"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -844,7 +894,9 @@
       },
       "delete": {
         "summary": "Remove role from user",
-        "tags": ["RBAC"],
+        "tags": [
+          "RBAC"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -903,7 +955,9 @@
     "/rbac/roles/{roleId}/permissions": {
       "patch": {
         "summary": "Update role permissions",
-        "tags": ["RBAC"],
+        "tags": [
+          "RBAC"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -984,7 +1038,9 @@
     "/rbac/roles/{roleId}/widgets": {
       "patch": {
         "summary": "Update role widgets",
-        "tags": ["RBAC"],
+        "tags": [
+          "RBAC"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1065,7 +1121,9 @@
     "/users": {
       "get": {
         "summary": "Get all users",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1109,7 +1167,9 @@
       },
       "post": {
         "summary": "Create a new user",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1154,7 +1214,9 @@
     "/users/{userId}": {
       "get": {
         "summary": "Get user by ID",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1219,7 +1281,9 @@
     "/users/{userId}/roles": {
       "patch": {
         "summary": "Update user roles",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1322,7 +1386,9 @@
     "/users/{userId}/status": {
       "patch": {
         "summary": "Update user status (enable/disable)",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []

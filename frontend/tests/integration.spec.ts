@@ -1,4 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { setupMockApi } from './utils/mockApi';
+
+test.beforeEach(async ({ page }) => {
+  await setupMockApi(page);
+});
 
 test.describe('Integration Tests - UI and API Data Flow', () => {
   test('should create and display new user', async ({ page }) => {

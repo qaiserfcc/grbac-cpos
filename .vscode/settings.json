@@ -2,7 +2,11 @@
 {
   // Editing & suggestions
   "editor.inlineSuggest.enabled": true, // show inline suggestions (works well with Copilot)
-  "editor.quickSuggestions": { "other": true, "comments": false, "strings": true },
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
   "editor.suggestSelection": "recentlyUsedByPrefix",
   "editor.tabCompletion": "on",
   "editor.acceptSuggestionOnEnter": "on",
@@ -10,19 +14,16 @@
   "editor.formatOnType": true,
   "editor.wordWrap": "on",
   "editor.minimap.enabled": true,
-
   // Files & autosave
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 1000,
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
-
   // UI & workspace
   "workbench.colorTheme": "Default Dark+",
   "workbench.startupEditor": "none",
   "workbench.sideBar.location": "left",
   "window.titleBarStyle": "custom",
-
   // Extensions & telemetry
   "extensions.recommendations": [
     "github.copilot",
@@ -44,18 +45,17 @@
   "extensions.ignoreRecommendations": false,
   "telemetry.enableTelemetry": false,
   "telemetry.enableCrashReporter": false,
-
   // Git
   "git.autofetch": true,
-
   // Helpful for multi-file edits suggested by chat agents
   "editor.multiCursorModifier": "ctrlCmd",
   "search.followSymlinks": false,
-
   //Terminal
   "terminal.integrated.defaultProfile.osx": "zsh",
   "terminal.integrated.fontSize": 12,
   "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.defaultLocation": "view",
-  "terminal.integrated.focusAfterRun": "accessible-buffer"
+  "terminal.integrated.focusAfterRun": "accessible-buffer",
+  "postman.settings.dotenv-detection-notification-visibility": false,
+  "CodeGPT.apiKey": "CodeGPT Plus Beta"
 }

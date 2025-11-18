@@ -1,4 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { setupMockApi } from './utils/mockApi';
+
+test.beforeEach(async ({ page }) => {
+  await setupMockApi(page);
+});
 
 test.describe('Authentication Tests', () => {
   test('should login as admin successfully', async ({ page }) => {
