@@ -10,6 +10,7 @@ const roles = [
   { name: 'Super Admin', description: 'Full system access' },
   { name: 'Product Admin', description: 'Manage products and related widgets' },
   { name: 'Category Admin', description: 'Manage categories and related widgets' },
+  { name: 'Customer Admin', description: 'Manage customers and related widgets' },
 ];
 
 const permissions = [
@@ -55,6 +56,15 @@ const permissions = [
     action: 'view',
     description: 'View category-related widgets',
   },
+  {
+    name: 'customer.create',
+    module: 'customer',
+    action: 'create',
+    description: 'Create new customer',
+  },
+  { name: 'customer.read', module: 'customer', action: 'read', description: 'Read customer data' },
+  { name: 'customer.update', module: 'customer', action: 'update', description: 'Update customer' },
+  { name: 'customer.delete', module: 'customer', action: 'delete', description: 'Delete customer' },
 ];
 
 const widgets = [
@@ -96,6 +106,12 @@ const rolePermissionAssignments: Record<string, string[]> = {
     'category.update',
     'category.delete',
     'dashboard.view.categories',
+  ],
+  'Customer Admin': [
+    'customer.create',
+    'customer.read',
+    'customer.update',
+    'customer.delete',
   ],
 };
 

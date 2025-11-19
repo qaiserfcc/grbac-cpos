@@ -18,6 +18,8 @@ const permissionMethods = ['findMany'];
 const userRoleMethods = ['findMany', 'createMany', 'upsert', 'deleteMany'];
 const productMethods = ['findMany', 'create', 'findUnique', 'update', 'delete'];
 const categoryMethods = ['findMany'];
+const customerMethods = ['findMany', 'create', 'findUnique', 'update', 'delete'];
+const saleMethods = ['findMany'];
 
 export const prismaMock = {
   user: createSection(userMethods),
@@ -28,6 +30,8 @@ export const prismaMock = {
   userRole: createSection(userRoleMethods),
   product: createSection(productMethods),
   category: createSection(categoryMethods),
+  customer: createSection(customerMethods),
+  sale: createSection(saleMethods),
 };
 
 export function resetPrismaMock() {

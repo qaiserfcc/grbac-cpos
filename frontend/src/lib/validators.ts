@@ -36,6 +36,15 @@ export const categorySchema = z.object({
   description: z.string().optional(),
 });
 
+export const customerSchema = z.object({
+  externalId: z.string().optional(),
+  fullName: z.string().min(1),
+  email: z.string().email().optional().or(z.literal('')),
+  phone: z.string().optional(),
+  loyaltyTier: z.string().optional(),
+  isVip: z.boolean().optional(),
+});
+
 export const roleSchema = z.object({
   name: z.string().min(2),
   description: z.string().optional(),
@@ -77,6 +86,7 @@ export type LoginSchema = z.infer<typeof loginSchema>;
 export type RegisterSchema = z.infer<typeof registerSchema>;
 export type ProductSchema = z.infer<typeof productSchema>;
 export type CategorySchema = z.infer<typeof categorySchema>;
+export type CustomerSchema = z.infer<typeof customerSchema>;
 export type RoleSchema = z.infer<typeof roleSchema>;
 export type UpdateUserRolesSchema = z.infer<typeof updateUserRolesSchema>;
 export type UpdateUserStatusSchema = z.infer<typeof updateUserStatusSchema>;

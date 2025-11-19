@@ -7,6 +7,10 @@ export type PermissionName =
   | 'category.read'
   | 'category.update'
   | 'category.delete'
+  | 'customer.create'
+  | 'customer.read'
+  | 'customer.update'
+  | 'customer.delete'
   | 'rbac.manage.roles'
   | 'rbac.manage.userRoles'
   | 'dashboard.view.products'
@@ -67,6 +71,34 @@ export interface Category {
   id: string;
   name: string;
   description?: string;
+}
+
+export interface Customer {
+  id: string;
+  externalId?: string;
+  fullName: string;
+  email?: string;
+  phone?: string;
+  loyaltyTier?: string;
+  isVip: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SaleItem {
+  id: string;
+  productId: string;
+  quantity: number;
+  price: number;
+  product: Product;
+}
+
+export interface Sale {
+  id: string;
+  customerId: string;
+  total: number;
+  createdAt: string;
+  items: SaleItem[];
 }
 
 export interface AuthTokens {

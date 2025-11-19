@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut, Home, Shapes, Package, Users } from 'lucide-react';
+import { LogOut, Home, Shapes, Package, Users, UserCog } from 'lucide-react';
 import clsx from 'clsx';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/context/ToastContext';
@@ -26,7 +26,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       permission: 'category.read',
     },
     { name: 'Products', href: '/dashboard/products', icon: Package, permission: 'product.read' },
-    { name: 'Users', href: '/dashboard/users', icon: Users, permission: 'rbac.manage.users' },
+    { name: 'Customers', href: '/dashboard/customers', icon: Users, permission: 'customer.read' },
+    { name: 'Users', href: '/dashboard/users', icon: UserCog, permission: 'rbac.manage.users' },
   ];
 
   useEffect(() => {
